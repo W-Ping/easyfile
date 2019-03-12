@@ -20,6 +20,10 @@ public class ExportExcelResponse extends BaseResponse {
         this.excelOutFilePath = excelOutFilePath;
     }
 
+    public ExportExcelResponse(String code, String excelOutFilePath) {
+        this(code, null, excelOutFilePath);
+    }
+
     public static ExportExcelResponse fail(String error) {
         ExportExcelResponse exportExcelResponse = new ExportExcelResponse();
         exportExcelResponse.setCode(FileConstant.FAIL_CODE);

@@ -28,7 +28,7 @@ public class EasyFileApplication {
     private static Logger logger = LoggerFactory.getLogger(EasyFileApplication.class);
 
     /**
-     * @param paramVo
+     * @param param
      * @return
      */
     public static ExportExcelResponse exportV2007(ExportExcelParam param) {
@@ -43,7 +43,7 @@ public class EasyFileApplication {
             ExportHandler exportHandler = new ExportHandler(inputStream, outputStream, ExcelTypeEnum.XLSX);
             List<ExcelSheet> excelSheets = param.getExcelSheets();
             exportHandler.exportExcelV2007(excelSheets);
-            exportExcelResponse = new ExportExcelResponse(FileConstant.SUCCESS_CODE, FileConstant.SUCCESS_CODE, param.getExcelOutFileFullPath());
+            exportExcelResponse = new ExportExcelResponse(FileConstant.SUCCESS_CODE, param.getExcelOutFileFullPath());
         } catch (Exception e) {
             e.printStackTrace();
             exportExcelResponse.setMessage(e.getMessage());
@@ -54,6 +54,10 @@ public class EasyFileApplication {
         return exportExcelResponse;
     }
 
+    /**
+     * @param param
+     * @return
+     */
     public static ExportExcelResponse exportV2007WithTemp(ExportExcelParam param) {
         if (StringUtils.isBlank(param.getExcelTemplateFile())) {
             return ExportExcelResponse.fail("excel template is null");
@@ -97,7 +101,7 @@ public class EasyFileApplication {
         int sheetNo = -1;
         for (ExcelSheet sheet : excelSheets) {
             if (sheetNo == sheet.getSheetNo()) {
-                throw new ExportException("multi sheetNo is identical");
+                throw new ExportException("sheetNo is repetition");
             }
             sheetNo = sheet.getSheetNo();
             validateTables(sheet.getExcelTables());
@@ -109,7 +113,7 @@ public class EasyFileApplication {
             int tableNo = -1;
             for (ExcelTable table : tables) {
                 if (tableNo == table.getTableNo()) {
-                    throw new ExportException("multi tableNo is identical");
+                    throw new ExportException("tableNo is repetition");
                 }
                 tableNo = table.getTableNo();
                 if (CollectionUtils.isEmpty(table.getHead()) && null == table.getHeadClass()) {
