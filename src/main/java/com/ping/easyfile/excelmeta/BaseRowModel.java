@@ -22,7 +22,8 @@ public class BaseRowModel {
     }
 
     public CellStyle getStyle(Integer row){
-        return cellStyleMap.get(row);
+        CellStyle cellStyle = cellStyleMap.get(row);
+        return cellStyle;
     }
 
     public Map<Integer, CellStyle> getCellStyleMap() {

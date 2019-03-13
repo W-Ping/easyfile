@@ -9,16 +9,15 @@ import com.ping.easyfile.excelmeta.ExcelTable;
  * @see
  */
 public interface IExcelBuilder {
+
     /**
-     * @param data
-     * @param sheetParam
+     * @param excelSheet
      */
     void addContent(ExcelSheet excelSheet);
 
+
     /**
-     * @param data
-     * @param startRow
-     * @param excelHeadProperty
+     * @param table
      */
     void addContent(ExcelTable table);
 

@@ -1,6 +1,7 @@
 package com.ping.easyfile.core.excel;
 
 import com.ping.easyfile.context.ExportContext;
+import com.ping.easyfile.core.handler.ExportAfterHandler;
 import com.ping.easyfile.em.BorderEnum;
 import com.ping.easyfile.em.ExcelTypeEnum;
 import com.ping.easyfile.excelmeta.*;
@@ -10,8 +11,11 @@ import com.ping.easyfile.util.TypeUtil;
 import com.ping.easyfile.util.WorkBookUtil;
 import net.sf.cglib.beans.BeanMap;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,12 +32,18 @@ public class ExcelBuilderImpl implements IExcelBuilder {
 
     public ExcelBuilderImpl(InputStream templateInputStream,
                             OutputStream outputStream,
-                            ExcelTypeEnum excelType) {
+                            ExcelTypeEnum excelType, ExportAfterHandler exportAfterHandler) {
         try {
-            context = new ExportContext(templateInputStream, outputStream, excelType);
+            context = new ExportContext(templateInputStream, outputStream, excelType, exportAfterHandler);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public ExcelBuilderImpl(InputStream templateInputStream,
+                            OutputStream outputStream,
+                            ExcelTypeEnum excelType) {
+        this(templateInputStream, outputStream, excelType, null);
     }
 
     @Override

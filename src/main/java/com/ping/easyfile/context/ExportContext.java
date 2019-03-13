@@ -1,5 +1,6 @@
 package com.ping.easyfile.context;
 
+import com.ping.easyfile.core.handler.ExportAfterHandler;
 import com.ping.easyfile.em.BorderEnum;
 import com.ping.easyfile.em.ExcelTypeEnum;
 import com.ping.easyfile.em.TableBodyEnum;
@@ -29,10 +30,12 @@ public class ExportContext {
     private ExcelSheet currentExcelSheetParam;
     private ExcelTypeEnum excelType;
     private OutputStream outputStream;
+    private ExportAfterHandler exportAfterHandler;
 
-    public ExportContext(InputStream templateInputStream, OutputStream outputStream, ExcelTypeEnum excelType) throws IOException {
+    public ExportContext(InputStream templateInputStream, OutputStream outputStream, ExcelTypeEnum excelType, ExportAfterHandler exportAfterHandler) throws IOException {
         this.excelType = excelType;
         this.outputStream = outputStream;
+        this.exportAfterHandler = exportAfterHandler;
         this.workbook = WorkBookUtil.createWorkBook(templateInputStream, excelType);
     }
 

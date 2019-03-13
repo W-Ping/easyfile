@@ -85,18 +85,7 @@ public class WorkBookUtil {
             } else {
                 cell.setCellValue(cellValue.toString());
             }
-            cell.getCellStyle();
         }
         return cell;
-    }
-
-    public static void main(String[] args) {
-//        BigDecimal d = new BigDecimal(12.3388);
-        float d = 66.2f;
-        Object obj = d;
-        Class<?> aClass = obj.getClass();
-//        BigDecimal dc = (BigDecimal) d.setScale(2, BigDecimal.ROUND_DOWN);
-        System.out.println(obj instanceof Float);
-//        System.out.println(dc.toPlainString());
     }
 }

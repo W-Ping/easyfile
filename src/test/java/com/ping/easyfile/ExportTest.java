@@ -133,5 +133,27 @@ public class ExportTest {
         logger.info("export result:{}", JSONUtil.objectToString(export));
         Assert.assertEquals(export.getCode(), FileConstant.SUCCESS_CODE);
     }
+    @Test
+    public void exportV2007WithCellStyle() {
+        String outFilePath = "/opt/excel_style";
+        String outFileName = TestData.createUniqueFileName("export") + ".xlsx";
+        ExcelTable excelTable1 = new ExcelTable(1, null, ExportTestModel.class, TestData.createTestListJavaModeStyle());
+        ExcelTable excelTable2 = new ExcelTable(2, null, ExcelTest2Model.class, TestData.createTestListJavaMode2());
+        List<ExcelTable> excelTables = new ArrayList<ExcelTable>(){{
+            add(excelTable1);
+            add(excelTable2);
+        }};
+        ExcelSheet sheet1 = new ExcelSheet(0, "测试style", excelTables);
+        List<ExcelSheet> sheets = new ArrayList<ExcelSheet>() {{
+            add(sheet1);
+        }};
+        ExportExcelParam exportExcelParam = new ExportExcelParam();
+        exportExcelParam.setExcelFileName(outFileName);
+        exportExcelParam.setExcelOutFilePath(outFilePath);
+        exportExcelParam.setExcelSheets(sheets);
+        ExportExcelResponse export = EasyFileApplication.exportV2007(exportExcelParam);
+        logger.info("export result:{}", JSONUtil.objectToString(export));
+        Assert.assertEquals(export.getCode(), FileConstant.SUCCESS_CODE);
+    }
 
 }

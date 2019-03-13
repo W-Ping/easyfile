@@ -98,7 +98,7 @@ public class EasyFileApplication {
         if (CollectionUtils.isEmpty(excelSheets)) {
             throw new ExportException("excel sheet is null");
         }
-        int sheetNo = -1;
+        int sheetNo = -999;
         for (ExcelSheet sheet : excelSheets) {
             if (sheetNo == sheet.getSheetNo()) {
                 throw new ExportException("sheetNo is repetition");
@@ -110,7 +110,7 @@ public class EasyFileApplication {
 
     private static void validateTables(List<ExcelTable> tables) throws ExportException {
         if (!CollectionUtils.isEmpty(tables)) {
-            int tableNo = -1;
+            int tableNo = -999;
             for (ExcelTable table : tables) {
                 if (tableNo == table.getTableNo()) {
                     throw new ExportException("tableNo is repetition");

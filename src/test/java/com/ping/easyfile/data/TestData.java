@@ -1,17 +1,19 @@
 package com.ping.easyfile.data;
 
+import com.ping.easyfile.em.ExcelTypeEnum;
 import com.ping.easyfile.model.ExcelTest2Model;
 import com.ping.easyfile.model.ExportTest3Model;
 import com.ping.easyfile.model.ExportTestModel;
 import com.ping.easyfile.excelmeta.ExcelStyle;
+import com.ping.easyfile.util.WorkBookUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.*;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author liu_wp
@@ -74,6 +76,39 @@ public class TestData {
             model1.setP8(new Date());
             model1.setP9("PPPP9999");
             model1.setP10(1111.77 + i);
+            model1s.add(model1);
+        }
+        return model1s;
+    }
+
+    public static List<ExportTestModel> createTestListJavaModeStyle(){
+        List<ExportTestModel> model1s = new ArrayList<ExportTestModel>();
+        Map<Integer, CellStyle> cellStyleMap = new HashMap<>();
+        Workbook workbook = null;
+        try {
+            workbook = WorkBookUtil.createWorkBook(null, ExcelTypeEnum.XLSX);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        CellStyle cellStyle = workbook.createCellStyle();
+        cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        cellStyle.setFillForegroundColor(IndexedColors.RED.getIndex());
+        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        cellStyle.setAlignment(HorizontalAlignment.CENTER);
+        cellStyleMap.put(3, cellStyle);
+        for (int i = 0; i < 5; i++) {
+            ExportTestModel model1 = new ExportTestModel();
+            model1.setP1("第一列，第" + (i + 1) + "行");
+            model1.setP2("32323JJfdf");
+            model1.setP3(33 + i);
+            model1.setP4(44);
+            model1.setP5("55ces");
+            model1.setP6(666.2f);
+            model1.setP7(new BigDecimal("23.13991399"));
+            model1.setP8(new Date());
+            model1.setP9("PPPP9999");
+            model1.setP10(1111.77 + i);
+            model1.setCellStyleMap(cellStyleMap);
             model1s.add(model1);
         }
         return model1s;
