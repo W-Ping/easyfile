@@ -1,6 +1,7 @@
 package com.ping.easyfile.excelmeta;
 
 import com.ping.easyfile.util.FieldUtil;
+import com.ping.easyfile.util.JSONUtil;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.lang.reflect.Field;
@@ -23,7 +24,7 @@ public class ExcelHeadProperty {
      */
     private List<List<String>> head = new ArrayList<>();
     /**
-     *  arguments of table head column
+     * arguments of table head column
      */
     private List<ExcelColumnProperty> columnPropertyList = new ArrayList<>();
     /**

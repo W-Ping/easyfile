@@ -1,12 +1,14 @@
 package com.ping.easyfile.context;
 
-import com.ping.easyfile.core.handler.ExportAfterHandler;
+import com.ping.easyfile.constant.FileConstant;
+import com.ping.easyfile.core.handler.IExportAfterHandler;
 import com.ping.easyfile.em.BorderEnum;
 import com.ping.easyfile.em.ExcelTypeEnum;
 import com.ping.easyfile.em.TableBodyEnum;
 import com.ping.easyfile.excelmeta.*;
 import com.ping.easyfile.util.StyleUtil;
 import com.ping.easyfile.util.WorkBookUtil;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -30,12 +32,12 @@ public class ExportContext {
     private ExcelSheet currentExcelSheetParam;
     private ExcelTypeEnum excelType;
     private OutputStream outputStream;
-    private ExportAfterHandler exportAfterHandler;
+    private IExportAfterHandler iExportAfterHandler;
 
-    public ExportContext(InputStream templateInputStream, OutputStream outputStream, ExcelTypeEnum excelType, ExportAfterHandler exportAfterHandler) throws IOException {
+    public ExportContext(InputStream templateInputStream, OutputStream outputStream, ExcelTypeEnum excelType, IExportAfterHandler iExportAfterHandler) throws IOException {
         this.excelType = excelType;
         this.outputStream = outputStream;
-        this.exportAfterHandler = exportAfterHandler;
+        this.iExportAfterHandler = iExportAfterHandler;
         this.workbook = WorkBookUtil.createWorkBook(templateInputStream, excelType);
     }
 
@@ -48,8 +50,16 @@ public class ExportContext {
                 this.currentSheet = workbook.getSheetAt(excelSheet.getSheetNo());
             } catch (Exception e) {
                 this.currentSheet = WorkBookUtil.createSheet(workbook, excelSheet);
+                if (this.getiExportAfterHandler() != null) {
+                    this.getiExportAfterHandler().sheet(excelSheet.getSheetNo(), this.currentSheet);
+                }
             }
             StyleUtil.buildTableWidthStyle(this.getCurrentSheet(), this.currentExcelSheetParam.getColumnWidthMap());
+            List<ExcelTable> excelTables = excelSheet.getExcelTables();
+            if (!CollectionUtils.isEmpty(excelTables)) {
+                excelTables.stream().forEach(v ->  initTableProperties(v));
+            }
+            excelSheet.initCurrentSheet();
         }
 
     }
@@ -59,16 +69,37 @@ public class ExportContext {
      *
      * @param table
      */
-    public void initTable(ExcelTable table) {
+    public  void initTable(ExcelTable table) {
         initTableHeadStyle(table);
         initTableContentStyle(table);
         initTableHead(table);
     }
 
+    private void initTableProperties(ExcelTable table) {
+        initExcelHeadProperty(table);
+        initTableRange(table);
+    }
+
+    private void initExcelHeadProperty(ExcelTable table) {
+        table.setExcelHeadProperty(new ExcelHeadProperty(table.getHeadClass(), table.getHead()));
+        if (CollectionUtils.isEmpty(table.getHead())) {
+            table.setHead(table.getExcelHeadProperty().getHead());
+        }
+    }
+
+    private void initTableRange(ExcelTable table) {
+        int headRowNum = table.isNeedHead() ? table.getExcelHeadProperty().getHeadRowNum() : 0;
+        table.setStartContentRowIndex(table.getFirstRowIndex() + headRowNum);
+        int lastRow = table.getStartContentRowIndex() + (!CollectionUtils.isEmpty(table.getData()) ? table.getData().size() : FileConstant.DEFAULT_ROW);
+        table.setTableCellRange(new ExcelCellRange(table.getFirstRowIndex(), lastRow, table.getFirstCellIndex(), table.getHead().size() + table.getFirstCellIndex()));
+
+    }
+
+
     private void initTableHead(ExcelTable table) {
         ExcelHeadProperty excelHeadProperty = table.getExcelHeadProperty();
         ExcelStyle headStyle = excelHeadProperty.getHeadStyle();
-        if (excelHeadProperty != null && excelHeadProperty.getHead().size() > 0) {
+        if (table.isNeedHead() && excelHeadProperty != null && excelHeadProperty.getHead().size() > 0) {
             int startRow = table.getFirstRowIndex();
             try {
                 addMergedRegionToCurrentSheet(startRow, table.getFirstCellIndex(), table.getExcelHeadProperty());
@@ -205,5 +236,13 @@ public class ExportContext {
 
     public void setOutputStream(OutputStream outputStream) {
         this.outputStream = outputStream;
+    }
+
+    public IExportAfterHandler getiExportAfterHandler() {
+        return iExportAfterHandler;
+    }
+
+    public void setiExportAfterHandler(IExportAfterHandler iExportAfterHandler) {
+        this.iExportAfterHandler = iExportAfterHandler;
     }
 }

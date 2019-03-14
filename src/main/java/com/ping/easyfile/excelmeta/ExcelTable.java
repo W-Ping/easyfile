@@ -27,28 +27,39 @@ public class ExcelTable implements Comparable<ExcelTable> {
     private int startContentRowIndex = 0;
     private int spaceNum = 1;
     private TableLayoutEnum tableLayoutEnum = TableLayoutEnum.BOTTOM;
+    private boolean needHead = true;
 
     public ExcelTable(int tableNo, List<List<String>> head, Class<? extends BaseRowModel> headClass, List<? extends BaseRowModel> data) {
-        this(tableNo, head, headClass, data, 0, 0, null);
+        this(tableNo, head, headClass, true, data, 0, 0, null);
     }
 
-    public ExcelTable(int tableNo, List<List<String>> head, Class<? extends BaseRowModel> headClass, List<? extends BaseRowModel> data, int firstRowIndex, int firstCellIndex, TableLayoutEnum tableLayoutEnum) {
+    public ExcelTable(int tableNo, List<List<String>> head, Class<? extends BaseRowModel> headClass, List<? extends BaseRowModel> data, boolean needHead) {
+        this(tableNo, head, headClass, needHead, data, 0, 0, null);
+    }
+
+    public ExcelTable(int tableNo, List<List<String>> head, Class<? extends BaseRowModel> headClass, List<? extends BaseRowModel> data, int firstRowIndex, int firstCellIndex) {
+        this(tableNo, head, headClass, true, data, 0, 0, null);
+    }
+
+    public ExcelTable(int tableNo, List<List<String>> head, Class<? extends BaseRowModel> headClass, boolean needHead, List<? extends BaseRowModel> data, int firstRowIndex, int firstCellIndex, TableLayoutEnum tableLayoutEnum) {
         this.tableNo = tableNo >= 0 ? tableNo : 0;
         this.head = head;
         this.headClass = headClass;
         this.data = data;
+        this.needHead = needHead;
         this.firstRowIndex = firstRowIndex >= 0 ? firstRowIndex : 0;
         this.firstCellIndex = firstCellIndex >= 0 ? firstCellIndex : 0;
         this.tableLayoutEnum = tableLayoutEnum != null ? tableLayoutEnum : TableLayoutEnum.BOTTOM;
-        initTableProperties();
+//        initTableProperties();
 
     }
 
 
-    public void initTableProperties() {
+    private void initTableProperties() {
         initExcelHeadProperty();
         initTableRange();
     }
+
     private void initExcelHeadProperty() {
         this.excelHeadProperty = new ExcelHeadProperty(this.headClass, head);
         if (CollectionUtils.isEmpty(this.head)) {
@@ -58,10 +69,7 @@ public class ExcelTable implements Comparable<ExcelTable> {
 
 
     private void initTableRange() {
-        if (this.tableCellRange != null) {
-            this.tableCellRange = null;
-        }
-        int headRowNum = this.excelHeadProperty.getHeadRowNum();
+        int headRowNum = this.needHead ? this.excelHeadProperty.getHeadRowNum() : 0;
         this.startContentRowIndex = this.firstRowIndex + headRowNum;
         int lastRow = this.startContentRowIndex + (!CollectionUtils.isEmpty(this.data) ? this.data.size() : FileConstant.DEFAULT_ROW);
         this.tableCellRange = new ExcelCellRange(this.firstRowIndex, lastRow, this.firstCellIndex, this.head.size() + this.firstCellIndex);
@@ -138,7 +146,7 @@ public class ExcelTable implements Comparable<ExcelTable> {
 
     public void setFirstRowIndex(int firstRowIndex) {
         this.firstRowIndex = firstRowIndex;
-        initTableRange();
+//        initTableRange();
     }
 
     public int getFirstCellIndex() {
@@ -147,7 +155,7 @@ public class ExcelTable implements Comparable<ExcelTable> {
 
     public void setFirstCellIndex(int firstCellIndex) {
         this.firstCellIndex = firstCellIndex;
-        initTableRange();
+//        initTableRange();
     }
 
     public int getStartContentRowIndex() {
@@ -187,6 +195,14 @@ public class ExcelTable implements Comparable<ExcelTable> {
         } else {
             this.tableLayoutEnum = tableLayoutEnum;
         }
+    }
+
+    public boolean isNeedHead() {
+        return needHead;
+    }
+
+    public void setNeedHead(boolean needHead) {
+        this.needHead = needHead;
     }
 
     @Override

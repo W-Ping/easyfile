@@ -25,14 +25,14 @@ public class ExcelSheet {
         this.sheetName = sheetName;
         this.sheetNo = sheetNo >= 0 ? sheetNo : 0;
         this.excelTables = excelTables;
-        initCurrentSheet();
+//        initCurrentSheet();
     }
 
     public ExcelSheet(int sheetNo, String sheetName, List<ExcelTable> excelTables) {
         this(sheetNo, sheetName, excelTables, true);
     }
 
-    private void initCurrentSheet() {
+    public void initCurrentSheet() {
         if (!CollectionUtils.isEmpty(excelTables) && excelTables.size() > 1) {
             Collections.sort(this.excelTables);
             if (isAutoLayOut) {
@@ -46,6 +46,7 @@ public class ExcelSheet {
                         ExcelCellRange currTableCellRange = currTable.getTableCellRange();
                         ExcelTable maxRowTable = getMaxRowTable(i - 1);
                         int rowNum = currTableCellRange.getLastRowIndex() - currTableCellRange.getFirstRowIndex();
+                        int headRowNum = currTable.isNeedHead() ? currTable.getExcelHeadProperty().getHeadRowNum() : 0;
                         if (TableLayoutEnum.RIGHT.equals(tableLayoutEnum)) {
                             ExcelTable preTable = this.excelTables.get(i - 1);
                             ExcelCellRange preTableCellRange = preTable.getTableCellRange();
@@ -60,6 +61,7 @@ public class ExcelSheet {
                             currTableCellRange.setLastRowIndex(currTableCellRange.getFirstRowIndex() + rowNum);
                             currTable.setFirstRowIndex(currTableCellRange.getFirstRowIndex());
                         }
+                        currTable.setStartContentRowIndex(currTableCellRange.getFirstRowIndex() + headRowNum);
                         currTable.setTableCellRange(currTableCellRange);
                     }
                 }
