@@ -18,6 +18,7 @@ public class BaseResponse {
 
     public BaseResponse() {
         this.code = FileConstant.FAIL_CODE;
+        this.message = "error";
     }
 
 

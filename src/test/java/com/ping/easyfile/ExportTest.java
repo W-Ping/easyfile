@@ -158,7 +158,7 @@ public class ExportTest {
     }
 
     @Test
-    public void exportV2007WithNohead() {
+    public void exportV2007WithNoHead() {
         String outFilePath = "/opt/excel_head";
         String outFileName = TestData.createUniqueFileName("export") + ".xlsx";
         ExcelTable excelTable1 = new ExcelTable(1, null, ExportTestModel.class, TestData.createTestListJavaModeStyle());
@@ -177,8 +177,16 @@ public class ExportTest {
             add(excelTable3);
         }};
         ExcelSheet sheet1 = new ExcelSheet(0, "测试head", excelTables);
+        ExcelSheet sheet2 = new ExcelSheet(1, "测试head2", excelTables);
+        Integer[] cell = {8, 8, 5, 6};
+        Integer[] cell3 = {9, 9, 5, 7};
+        List<Integer[]> ss = new ArrayList<>();
+        ss.add(cell);
+        ss.add(cell3);
+        sheet1.setMergeData(ss);
         List<ExcelSheet> sheets = new ArrayList<ExcelSheet>() {{
             add(sheet1);
+            add(sheet2);
         }};
         ExportExcelParam exportExcelParam = new ExportExcelParam();
         exportExcelParam.setExcelFileName(outFileName);

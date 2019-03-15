@@ -1,13 +1,10 @@
 package com.ping.easyfile.excelmeta;
 
 import com.ping.easyfile.em.TableLayoutEnum;
-import com.ping.easyfile.util.JSONUtil;
+import com.ping.easyfile.exception.ExcelParseException;
 import org.apache.commons.collections4.CollectionUtils;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author liu_wp
@@ -20,12 +17,12 @@ public class ExcelSheet {
     private boolean isAutoLayOut = true;
     private List<ExcelTable> excelTables;
     private Map<Integer, Integer> columnWidthMap = new HashMap<>();
+    private List<Integer[]> mergeData;//Integer[]={startRow,lastRow,startCell,endCell}
 
     public ExcelSheet(int sheetNo, String sheetName, List<ExcelTable> excelTables, boolean isAutoLayOut) {
         this.sheetName = sheetName;
         this.sheetNo = sheetNo >= 0 ? sheetNo : 0;
         this.excelTables = excelTables;
-//        initCurrentSheet();
     }
 
     public ExcelSheet(int sheetNo, String sheetName, List<ExcelTable> excelTables) {
@@ -168,5 +165,29 @@ public class ExcelSheet {
 
     public void setAutoLayOut(boolean autoLayOut) {
         isAutoLayOut = autoLayOut;
+    }
+
+    public List<Integer[]> getMergeData() {
+        return mergeData;
+    }
+
+    public void setMergeData(List<Integer[]> mergeData) {
+        if (mergeData != null && mergeData.stream().filter(v -> v.length != 4).findAny().isPresent()) {
+            throw new ExcelParseException("array of Integers can only be 4 sizes in mergeData ");
+        }
+        this.mergeData = mergeData;
+    }
+
+    public static void main(String[] args) {
+        Set<Integer[]> ss = new HashSet<>();
+        Integer[] a = {1, 2, 3, 4};
+        Integer[] ad = {1, 2, 5, 4};
+        ss.add(a);
+        ss.add(ad);
+//        Optional<Integer[]> any = ss.stream().filter(v -> v.length != 4).findAny();
+        boolean present = ss.stream().filter(v -> v.length != 4).findAny().isPresent();
+//        Integer[] integers = any.get();
+//        System.out.println(JSONUtil.objectToString(integers));
+        System.out.println(present);
     }
 }

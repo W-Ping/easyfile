@@ -2,6 +2,7 @@ package com.ping.easyfile.core.excel;
 
 import com.ping.easyfile.excelmeta.ExcelSheet;
 import com.ping.easyfile.excelmeta.ExcelTable;
+import org.apache.poi.ss.util.CellRangeAddress;
 
 /**
  * @author liu_wp
@@ -20,6 +21,14 @@ public interface IExcelBuilder {
      * @param table
      */
     void addContent(ExcelTable table);
+
+    /**
+     * @param startRow
+     * @param endRow
+     * @param startCell
+     * @param endCell
+     */
+    void merge(int startRow, int endRow, int startCell, int endCell);
 
     /**
      *

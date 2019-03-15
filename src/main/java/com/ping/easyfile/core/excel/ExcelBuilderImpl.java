@@ -14,6 +14,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.util.CellRangeAddress;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,6 +53,9 @@ public class ExcelBuilderImpl implements IExcelBuilder {
             context.initTable(excelTable);
             this.addContent(excelTable);
         }
+        if (excelSheet.getMergeData() != null) {
+            excelSheet.getMergeData().stream().forEach(v -> merge(v[0], v[1], v[2], v[3]));
+        }
     }
 
     @Override
@@ -66,12 +70,23 @@ public class ExcelBuilderImpl implements IExcelBuilder {
         if (CollectionUtils.isEmpty(data)) {
             return;
         }
-        int i1 = data.size() - 1;
         for (int i = 0; i < data.size(); i++) {
             int n = i + startRow;
             addOneRowDataToExcel(data.get(i), n, table.getFirstCellIndex(), currentCellStyle, table.getExcelHeadProperty());
             StyleUtil.buildCellBorderStyle(currentCellStyle, 0, i == 0 && !table.isNeedHead(), BorderEnum.TOP);
         }
+    }
+
+    /**
+     * @param startRow
+     * @param endRow
+     * @param startCell
+     * @param endCell
+     */
+    @Override
+    public void merge(int startRow, int endRow, int startCell, int endCell) {
+        CellRangeAddress cellRangeAddress = new CellRangeAddress(startRow, endRow, startCell, endCell);
+        context.getCurrentSheet().addMergedRegion(cellRangeAddress);
     }
 
     @Override
