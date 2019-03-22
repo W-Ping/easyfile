@@ -2,7 +2,6 @@ package com.ping.easyfile.core.excel;
 
 import com.ping.easyfile.excelmeta.ExcelSheet;
 import com.ping.easyfile.excelmeta.ExcelTable;
-import org.apache.poi.ss.util.CellRangeAddress;
 
 /**
  * @author liu_wp
