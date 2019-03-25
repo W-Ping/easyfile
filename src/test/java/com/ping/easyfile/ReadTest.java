@@ -1,6 +1,7 @@
 package com.ping.easyfile;
 
 import com.ping.easyfile.excelmeta.ExcelReadTable;
+import com.ping.easyfile.model.ReadTest2Model;
 import com.ping.easyfile.model.ReadTestModel;
 import com.ping.easyfile.util.JSONUtil;
 import org.junit.Test;
@@ -26,13 +27,18 @@ public class ReadTest {
         ExcelReadTable excelReadTable = new ExcelReadTable(1, 0, 5);
         excelReadTable.setDataModelClass(ReadTestModel.class);
         excelReadTables.add(excelReadTable);
+        ExcelReadTable excelReadTable1 = new ExcelReadTable(2, 8);
+        excelReadTable1.setDataModelClass(ReadTest2Model.class);
+        excelReadTables.add(excelReadTable1);
         Map<Integer, List<Object>> integerListMap = EasyFileApplication.readExcel(excelPath, excelReadTables);
-        List<Object> list = integerListMap.get(1);
-        for (Object obj : list) {
+        List<Object> list1 = integerListMap.get(1);
+        for (Object obj : list1) {
             ReadTestModel d = (ReadTestModel) obj;
             System.out.println(d.getDate().getHours());
 //            System.out.println(DateUtil.formatDate(d.getDate()));
         }
-        logger.info("解析结果{}", JSONUtil.objectToString(integerListMap));
+        List<Object> list2 = integerListMap.get(2);
+        logger.info("解析结果1{}", JSONUtil.objectToString(list1));
+        logger.info("解析结果2{}", JSONUtil.objectToString(list2));
     }
 }

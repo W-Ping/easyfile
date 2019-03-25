@@ -55,6 +55,7 @@ public class ReadContext {
             Row row = this.currentSheet.getRow(startRowIndex);
             //table 循环结束条件
             if (row == null || (null != lastRowIndex && lastRowIndex == startRowIndex)) {
+                excelReadTable.setLastRowIndex(startRowIndex);
                 break;
             }
             try {

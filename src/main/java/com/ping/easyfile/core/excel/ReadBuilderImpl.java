@@ -6,6 +6,7 @@ import com.ping.easyfile.excelmeta.ExcelReadTable;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,9 +32,22 @@ public class ReadBuilderImpl implements IReadBuilder {
     public Map<Integer, List<Object>> read(List<ExcelReadTable> excelReadTables) {
         Map<Integer, List<Object>> readTableMap = new HashMap<>();
         if (!CollectionUtils.isEmpty(excelReadTables)) {
-            for (ExcelReadTable excelReadTable : excelReadTables) {
-                List<Object> list = readContext.readExcelTable(excelReadTable);
-                readTableMap.put(excelReadTable.getTableNo(), list);
+            Collections.sort(excelReadTables);
+            ExcelReadTable excelReadTable = null;
+            int size = excelReadTables.size();
+            for (int i = 0; i < size; i++) {
+                if (!readTableMap.containsKey(excelReadTable.getTableNo())) {
+                    excelReadTable = excelReadTables.get(i);
+                    List<Object> list = readContext.readExcelTable(excelReadTable);
+                    readTableMap.put(excelReadTable.getTableNo(), list);
+                }
+                if (i < size - 1) {
+                    Integer lastRowIndex = excelReadTable.getLastRowIndex();
+                    excelReadTable = excelReadTables.get(i + 1);
+                    excelReadTable.setStartRowIndex(lastRowIndex);
+                    List<Object> list1 = readContext.readExcelTable(excelReadTable);
+                    readTableMap.put(excelReadTable.getTableNo(), list1);
+                }
             }
         }
         return readTableMap;

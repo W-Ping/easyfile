@@ -5,14 +5,18 @@ package com.ping.easyfile.excelmeta;
  * @date Created in 2019/3/22 14:26
  * @see
  */
-public class ExcelReadTable {
+public class ExcelReadTable implements Comparable<ExcelReadTable> {
     private int tableNo;
-    private int sheetNo;
+    private int sheetNo = 0;
     private Class<? extends BaseRowModel> dataModelClass;
     private int startCellIndex;
     private int startRowIndex = 1;
     private Integer lastCellIndex;
     private Integer lastRowIndex;
+
+    public ExcelReadTable(int tableNo, Integer lastCellIndex) {
+        this(tableNo, 0, lastCellIndex);
+    }
 
     public ExcelReadTable(int tableNo, int sheetNo, Integer lastCellIndex) {
         this.tableNo = tableNo;
@@ -46,6 +50,13 @@ public class ExcelReadTable {
 
     public Integer getLastCellIndex() {
         return lastCellIndex;
+    }
+
+    @Override
+    public int compareTo(ExcelReadTable o) {
+        int x = this.tableNo;
+        int y = o.getTableNo();
+        return (x < y) ? -1 : ((x == y) ? 0 : 1);
     }
 
     public void setLastCellIndex(Integer lastCellIndex) {
