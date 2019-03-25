@@ -7,10 +7,18 @@ package com.ping.easyfile.excelmeta;
  */
 public class ExcelReadTable {
     private int tableNo;
-    private Class<? extends BaseRowModel> dataModelClass;
-    private ExcelCellRange excelCellRange;
     private int sheetNo;
+    private Class<? extends BaseRowModel> dataModelClass;
+    private int startCellIndex;
+    private int startRowIndex = 1;
+    private Integer lastCellIndex;
+    private Integer lastRowIndex;
 
+    public ExcelReadTable(int tableNo, int sheetNo, Integer lastCellIndex) {
+        this.tableNo = tableNo;
+        this.sheetNo = sheetNo;
+        this.lastCellIndex = lastCellIndex;
+    }
 
     public Class<? extends BaseRowModel> getDataModelClass() {
         return dataModelClass;
@@ -20,12 +28,28 @@ public class ExcelReadTable {
         this.dataModelClass = dataModelClass;
     }
 
-    public ExcelCellRange getExcelCellRange() {
-        return excelCellRange;
+    public int getStartCellIndex() {
+        return startCellIndex;
     }
 
-    public void setExcelCellRange(ExcelCellRange excelCellRange) {
-        this.excelCellRange = excelCellRange;
+    public void setStartCellIndex(int startCellIndex) {
+        this.startCellIndex = startCellIndex;
+    }
+
+    public int getStartRowIndex() {
+        return startRowIndex;
+    }
+
+    public void setStartRowIndex(int startRowIndex) {
+        this.startRowIndex = startRowIndex;
+    }
+
+    public Integer getLastCellIndex() {
+        return lastCellIndex;
+    }
+
+    public void setLastCellIndex(Integer lastCellIndex) {
+        this.lastCellIndex = lastCellIndex;
     }
 
     public int getTableNo() {
@@ -42,5 +66,13 @@ public class ExcelReadTable {
 
     public void setSheetNo(int sheetNo) {
         this.sheetNo = sheetNo;
+    }
+
+    public Integer getLastRowIndex() {
+        return lastRowIndex;
+    }
+
+    public void setLastRowIndex(Integer lastRowIndex) {
+        this.lastRowIndex = lastRowIndex;
     }
 }

@@ -1,8 +1,10 @@
 package com.ping.easyfile;
 
 import com.ping.easyfile.constant.FileConstant;
+import com.ping.easyfile.core.excel.ReadBuilderImpl;
 import com.ping.easyfile.core.handler.ExportHandler;
 import com.ping.easyfile.em.ExcelTypeEnum;
+import com.ping.easyfile.excelmeta.ExcelReadTable;
 import com.ping.easyfile.excelmeta.ExcelSheet;
 import com.ping.easyfile.excelmeta.ExcelTable;
 import com.ping.easyfile.request.ExportExcelParam;
@@ -18,6 +20,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.rmi.server.ExportException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author liu_wp
@@ -65,6 +68,25 @@ public class EasyFileApplication {
         return exportV2007(param);
     }
 
+    /**
+     * @param excelReadTables
+     * @param excelPath
+     * @return
+     */
+    public static Map<Integer, List<Object>> readExcel(String excelPath, List<ExcelReadTable> excelReadTables) {
+        Map<Integer, List<Object>> read = null;
+        InputStream inputStream = null;
+        try {
+            inputStream = FileUtil.getResourcesFileInputStream(excelPath);
+            ReadBuilderImpl readBuilder = new ReadBuilderImpl(inputStream);
+            read = readBuilder.read(excelReadTables);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            FileUtil.close(inputStream, null);
+        }
+        return read;
+    }
 
     /**
      * @param exportExcelParam

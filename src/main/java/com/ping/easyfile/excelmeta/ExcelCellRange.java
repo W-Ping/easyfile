@@ -11,6 +11,9 @@ public class ExcelCellRange {
     private int firstCellIndex = 0;
     private int lastCellIndex;
 
+    public ExcelCellRange() {
+    }
+
     public ExcelCellRange(int firstRowIndex, int lastRowIndex, int firstCellIndex, int lastCellIndex) {
         this.firstRowIndex = firstRowIndex;
         this.lastRowIndex = lastRowIndex;

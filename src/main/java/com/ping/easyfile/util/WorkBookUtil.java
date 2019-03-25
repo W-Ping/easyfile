@@ -38,6 +38,19 @@ public class WorkBookUtil {
         return workbook;
     }
 
+    public static Workbook createWorkBookWithStream(InputStream inputStream, ExcelTypeEnum excelType) throws IOException {
+        if (inputStream == null) {
+            throw new IOException("inputStream is null");
+        }
+        Workbook workbook;
+        if (ExcelTypeEnum.XLS.equals(excelType)) {
+            workbook = new HSSFWorkbook(inputStream);
+        } else {
+            workbook = new XSSFWorkbook(inputStream);
+        }
+        return workbook;
+    }
+
     public static Sheet createOrGetSheet(Workbook workbook, int sheetAt) {
         Sheet sheet = null;
         try {
