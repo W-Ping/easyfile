@@ -1,7 +1,6 @@
 package com.ping.easyfile.core.excel;
 
 import com.ping.easyfile.context.ReadContext;
-import com.ping.easyfile.em.ExcelTypeEnum;
 import com.ping.easyfile.excelmeta.ExcelReadTable;
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -36,17 +35,16 @@ public class ReadBuilderImpl implements IReadBuilder {
             ExcelReadTable excelReadTable = null;
             int size = excelReadTables.size();
             for (int i = 0; i < size; i++) {
-                if (!readTableMap.containsKey(excelReadTable.getTableNo())) {
-                    excelReadTable = excelReadTables.get(i);
-                    List<Object> list = readContext.readExcelTable(excelReadTable);
-                    readTableMap.put(excelReadTable.getTableNo(), list);
+                excelReadTable = excelReadTables.get(i);
+                if (i == 0) {
+                    excelReadTable.setSpaceRowSize(0);
                 }
+                List<Object> list = readContext.readExcelTable(excelReadTable);
+                readTableMap.put(excelReadTable.getTableNo(), list);
                 if (i < size - 1) {
                     Integer lastRowIndex = excelReadTable.getLastRowIndex();
                     excelReadTable = excelReadTables.get(i + 1);
-                    excelReadTable.setStartRowIndex(lastRowIndex);
-                    List<Object> list1 = readContext.readExcelTable(excelReadTable);
-                    readTableMap.put(excelReadTable.getTableNo(), list1);
+                    excelReadTable.setStartRowIndex(lastRowIndex + excelReadTable.getSpaceRowSize());
                 }
             }
         }

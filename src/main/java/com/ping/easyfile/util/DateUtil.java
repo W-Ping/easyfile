@@ -24,6 +24,11 @@ public class DateUtil {
         return simpleDateFormat.format(date);
     }
 
+    /**
+     * @param date
+     * @param dateFormat
+     * @return
+     */
     public static String formatDate(Date date, String dateFormat) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.SIMPLIFIED_CHINESE);
         return simpleDateFormat.format(date);

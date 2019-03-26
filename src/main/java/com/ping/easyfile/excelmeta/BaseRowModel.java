@@ -15,7 +15,7 @@ public class BaseRowModel {
     /**
      * 每列样式
      */
-    private Map<Integer,CellStyle> cellStyleMap = new HashMap<Integer,CellStyle>();
+    private transient Map<Integer,CellStyle> cellStyleMap = new HashMap<Integer,CellStyle>();
 
     public void addStyle(Integer row, CellStyle cellStyle){
         cellStyleMap.put(row,cellStyle);

@@ -74,6 +74,7 @@ public class EasyFileApplication {
      * @return
      */
     public static Map<Integer, List<Object>> readExcel(String excelPath, List<ExcelReadTable> excelReadTables) {
+        logger.info("read excel startTime:" + System.currentTimeMillis());
         Map<Integer, List<Object>> read = null;
         InputStream inputStream = null;
         try {
@@ -85,6 +86,7 @@ public class EasyFileApplication {
         } finally {
             FileUtil.close(inputStream, null);
         }
+        logger.info("read excel endTime:" + System.currentTimeMillis());
         return read;
     }
 

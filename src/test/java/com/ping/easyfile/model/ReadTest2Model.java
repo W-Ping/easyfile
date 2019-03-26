@@ -28,7 +28,7 @@ public class ReadTest2Model extends BaseRowModel {
     private String a7;
     @ExcelColumn(index = 7)
     private Integer a8;
-    @ExcelColumn(index = 8)
+    @ExcelColumn(index = 8,format = "yyyy年MM月dd日 HH时mm分ss秒")
     private String a9;
 
     public String getA1() {

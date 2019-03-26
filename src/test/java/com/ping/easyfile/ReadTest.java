@@ -29,16 +29,11 @@ public class ReadTest {
         excelReadTables.add(excelReadTable);
         ExcelReadTable excelReadTable1 = new ExcelReadTable(2, 8);
         excelReadTable1.setDataModelClass(ReadTest2Model.class);
-        excelReadTables.add(excelReadTable1);
+//        excelReadTables.add(excelReadTable1);
         Map<Integer, List<Object>> integerListMap = EasyFileApplication.readExcel(excelPath, excelReadTables);
         List<Object> list1 = integerListMap.get(1);
-        for (Object obj : list1) {
-            ReadTestModel d = (ReadTestModel) obj;
-            System.out.println(d.getDate().getHours());
-//            System.out.println(DateUtil.formatDate(d.getDate()));
-        }
-        List<Object> list2 = integerListMap.get(2);
+//        List<Object> list2 = integerListMap.get(2);
         logger.info("解析结果1{}", JSONUtil.objectToString(list1));
-        logger.info("解析结果2{}", JSONUtil.objectToString(list2));
+//        logger.info("解析结果2{}", JSONUtil.objectToString(list2));
     }
 }

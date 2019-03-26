@@ -1,24 +1,20 @@
 package com.ping.easyfile.context;
 
 import com.ping.easyfile.annotation.ExcelColumn;
+import com.ping.easyfile.em.DateTypeEnum;
 import com.ping.easyfile.em.ExcelTypeEnum;
 import com.ping.easyfile.excelmeta.BaseRowModel;
-import com.ping.easyfile.excelmeta.ExcelCellRange;
 import com.ping.easyfile.excelmeta.ExcelReadTable;
 import com.ping.easyfile.exception.ExcelParseException;
 import com.ping.easyfile.util.DateUtil;
 import com.ping.easyfile.util.WorkBookUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFDataFormat;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -44,18 +40,19 @@ public class ReadContext {
         if (null == this.currentSheet) {
             throw new ExcelParseException("sheet is null");
         }
-        int startRowIndex = excelReadTable.getStartRowIndex();
+        int startContentRowIndex = excelReadTable.getStartRowIndex() + excelReadTable.getHeadSize();
         Integer lastRowIndex = excelReadTable.getLastRowIndex();
         int startCellIndex = excelReadTable.getStartCellIndex();
         Integer lastCellIndex = excelReadTable.getLastCellIndex();
         Class<? extends BaseRowModel> dataModelClass = excelReadTable.getDataModelClass();
         int physicalNumberOfRows = this.currentSheet.getPhysicalNumberOfRows();
         Object obj = null;
+
         do {
-            Row row = this.currentSheet.getRow(startRowIndex);
+            Row row = this.currentSheet.getRow(startContentRowIndex);
             //table 循环结束条件
-            if (row == null || (null != lastRowIndex && lastRowIndex == startRowIndex)) {
-                excelReadTable.setLastRowIndex(startRowIndex);
+            if (row == null || (null != lastRowIndex && lastRowIndex == startContentRowIndex)) {
+                excelReadTable.setLastRowIndex(startContentRowIndex);
                 break;
             }
             try {
@@ -69,18 +66,25 @@ public class ReadContext {
                 e.printStackTrace();
             }
             lastCellIndex = startCellIndex + (lastCellIndex != null ? lastCellIndex : row.getPhysicalNumberOfCells() - 1);
+            boolean rowIsEmpty = true;
             for (int i = startCellIndex; i <= lastCellIndex; i++) {
                 Cell cell = row.getCell(i);
+                if (cell != null) {
+                    rowIsEmpty = false;
+                }
                 addExcelValueToObject(cell, obj);
             }
-            list.add(obj);
-            startRowIndex++;
-        } while (startRowIndex <= physicalNumberOfRows);
+            startContentRowIndex++;
+            if (!rowIsEmpty) {
+                list.add(obj);
+            }
+        } while (startContentRowIndex <= physicalNumberOfRows);
         return list;
     }
 
 
     private void addExcelValueToObject(Cell cell, Object obj) {
+        if (null == cell) return;
         Class<?> aClass = obj.getClass();
         Field[] declaredFields = aClass.getDeclaredFields();
         int columnIndex = cell.getColumnIndex();
@@ -94,19 +98,26 @@ public class ReadContext {
                     int index = annotation.index();
                     if (columnIndex == index) {
                         CellType cellTypeEnum = cell.getCellTypeEnum();
-                        String format = annotation.format();
-                        if (Date.class.equals(f.getType()) && cellTypeEnum.equals(CellType.NUMERIC)
+                        if (cellTypeEnum.equals(CellType.NUMERIC)
                                 && org.apache.poi.ss.usermodel.DateUtil.isCellDateFormatted(cell, null)) {
-                            Date dateCellValue = cell.getDateCellValue();
-                            if (StringUtils.isNotBlank(format)) {
-                                String ss = DateUtil.formatDate(dateCellValue, format);
-                                dateCellValue = DateUtil.covertStrToDate(ss);
+                            String format = annotation.format();
+                            if (Date.class.equals(f.getType())) {
+                                Date dateCellValue = cell.getDateCellValue();
+                                if (StringUtils.isNotBlank(format)) {
+                                    String ss = DateUtil.formatDate(dateCellValue, format);
+                                    dateCellValue = DateUtil.covertStrToDate(ss);
+                                } else {
+                                    String ss = DateUtil.formatDate(dateCellValue, DateTypeEnum.TIMESTAMP_TIME.getFormat());
+                                    dateCellValue = DateUtil.covertStrToDate(ss);
+                                }
+                                f.set(obj, dateCellValue);
                             } else {
-                                String ss = DateUtil.formatDate(dateCellValue, "yyyy/MM/dd HH:mm:ss");
-                                dateCellValue = DateUtil.covertStrToDate(ss);
+                                if (StringUtils.isNotBlank(format)) {
+                                    f.set(obj, DateUtil.formatDate(cellValue, format));
+                                } else {
+                                    f.set(obj, cellValue);
+                                }
                             }
-                            f.set(obj, dateCellValue);
-
                         } else if (BigDecimal.class.equals(f.getType())) {
                             f.set(obj, new BigDecimal(cellValue));
                         } else if (Integer.class.equals(f.getType()) || int.class.equals(f.getType())) {
