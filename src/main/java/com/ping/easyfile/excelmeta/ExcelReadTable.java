@@ -14,15 +14,19 @@ public class ExcelReadTable implements Comparable<ExcelReadTable> {
     private Integer lastCellIndex;
     private Integer lastRowIndex;
     private int headSize = 1;
-    private int spaceRowSize = 1;
 
-    public ExcelReadTable(int tableNo, Integer lastCellIndex) {
-        this(tableNo, 0, lastCellIndex);
+    public ExcelReadTable(int tableNo) {
+        this.tableNo = tableNo <= 0 ? 1 : tableNo;
     }
 
-    public ExcelReadTable(int tableNo, int sheetNo, Integer lastCellIndex) {
-        this.tableNo = tableNo;
+    public ExcelReadTable(int tableNo, Integer startCellIndex, Integer lastCellIndex) {
+        this(tableNo, 0, startCellIndex, lastCellIndex);
+    }
+
+    public ExcelReadTable(int tableNo, int sheetNo, Integer startCellIndex, Integer lastCellIndex) {
+        this.tableNo = tableNo <= 0 ? 1 : tableNo;
         this.sheetNo = sheetNo;
+        this.startCellIndex = startCellIndex;
         this.lastCellIndex = lastCellIndex;
     }
 
@@ -70,7 +74,7 @@ public class ExcelReadTable implements Comparable<ExcelReadTable> {
     }
 
     public void setTableNo(int tableNo) {
-        this.tableNo = tableNo;
+        this.tableNo = tableNo <= 0 ? 1 : tableNo;
     }
 
     public int getSheetNo() {
@@ -97,11 +101,4 @@ public class ExcelReadTable implements Comparable<ExcelReadTable> {
         this.headSize = headSize;
     }
 
-    public int getSpaceRowSize() {
-        return spaceRowSize;
-    }
-
-    public void setSpaceRowSize(int spaceRowSize) {
-        this.spaceRowSize = spaceRowSize;
-    }
 }

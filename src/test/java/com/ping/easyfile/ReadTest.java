@@ -24,16 +24,16 @@ public class ReadTest {
     public void readExcelTest() {
         String excelPath = "red_test.xlsx";
         List<ExcelReadTable> excelReadTables = new ArrayList<>();
-        ExcelReadTable excelReadTable = new ExcelReadTable(1, 0, 5);
+        ExcelReadTable excelReadTable = new ExcelReadTable(1);
         excelReadTable.setDataModelClass(ReadTestModel.class);
         excelReadTables.add(excelReadTable);
-        ExcelReadTable excelReadTable1 = new ExcelReadTable(2, 8);
+        ExcelReadTable excelReadTable1 = new ExcelReadTable(2);
         excelReadTable1.setDataModelClass(ReadTest2Model.class);
-//        excelReadTables.add(excelReadTable1);
+        excelReadTables.add(excelReadTable1);
         Map<Integer, List<Object>> integerListMap = EasyFileApplication.readExcel(excelPath, excelReadTables);
         List<Object> list1 = integerListMap.get(1);
-//        List<Object> list2 = integerListMap.get(2);
+        List<Object> list2 = integerListMap.get(2);
         logger.info("解析结果1{}", JSONUtil.objectToString(list1));
-//        logger.info("解析结果2{}", JSONUtil.objectToString(list2));
+        logger.info("解析结果2{}", JSONUtil.objectToString(list2));
     }
 }

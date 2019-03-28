@@ -42,7 +42,7 @@ public class ExcelTable implements Comparable<ExcelTable> {
     }
 
     public ExcelTable(int tableNo, List<List<String>> head, Class<? extends BaseRowModel> headClass, boolean needHead, List<? extends BaseRowModel> data, int firstRowIndex, int firstCellIndex, TableLayoutEnum tableLayoutEnum) {
-        this.tableNo = tableNo >= 0 ? tableNo : 0;
+        this.tableNo = tableNo <= 0 ? 1 : tableNo;
         this.head = head;
         this.headClass = headClass;
         this.data = data;
@@ -81,7 +81,7 @@ public class ExcelTable implements Comparable<ExcelTable> {
     }
 
     public void setTableNo(int tableNo) {
-        this.tableNo = tableNo >= 0 ? tableNo : 0;
+        this.tableNo = tableNo <= 0 ? 1 : tableNo;
     }
 
     public ExcelHeadProperty getExcelHeadProperty() {

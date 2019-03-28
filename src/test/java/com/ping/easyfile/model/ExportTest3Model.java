@@ -1,30 +1,30 @@
 package com.ping.easyfile.model;
 
-import com.ping.easyfile.annotation.ExcelProperty;
+import com.ping.easyfile.annotation.ExcelWriteProperty;
 import com.ping.easyfile.excelmeta.BaseRowModel;
 
 import java.math.BigDecimal;
 
 public class ExportTest3Model extends BaseRowModel {
-    @ExcelProperty(value = {"表头1","表头1","表头31"},index = 0)
+    @ExcelWriteProperty(value = {"表头1","表头1","表头31"},index = 0)
     protected String p1;
 
-    @ExcelProperty(value = {"表头1","表头1","表头32"},index = 1)
+    @ExcelWriteProperty(value = {"表头1","表头1","表头32"},index = 1)
     protected String p2;
 
-    @ExcelProperty(value = {"表头3", "表头3", "表头3"}, index = 2)
+    @ExcelWriteProperty(value = {"表头3", "表头3", "表头3"}, index = 2)
     private int p3;
 
-    @ExcelProperty(value = {"表头1", "表头4", "表头4"}, index = 3)
+    @ExcelWriteProperty(value = {"表头1", "表头4", "表头4"}, index = 3)
     private long p4;
 
-    @ExcelProperty(value = {"表头5", "表头51", "表头52"}, index = 4)
+    @ExcelWriteProperty(value = {"表头5", "表头51", "表头52"}, index = 4)
     private String p5;
 
-    @ExcelProperty(value = {"表头6", "表头61", "表头611"}, index = 5)
+    @ExcelWriteProperty(value = {"表头6", "表头61", "表头611"}, index = 5)
     private float p6;
 
-    @ExcelProperty(value = {"表头6", "表头61", "表头612"}, index = 6)
+    @ExcelWriteProperty(value = {"表头6", "表头61", "表头612"}, index = 6)
     private BigDecimal p7;
 
     public String getP1() {

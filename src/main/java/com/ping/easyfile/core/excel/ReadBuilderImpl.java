@@ -16,6 +16,7 @@ import java.util.Map;
  * @see
  */
 public class ReadBuilderImpl implements IReadBuilder {
+
     private ReadContext readContext;
 
     public ReadBuilderImpl(InputStream inputStream) {
@@ -36,15 +37,13 @@ public class ReadBuilderImpl implements IReadBuilder {
             int size = excelReadTables.size();
             for (int i = 0; i < size; i++) {
                 excelReadTable = excelReadTables.get(i);
-                if (i == 0) {
-                    excelReadTable.setSpaceRowSize(0);
-                }
+                readContext.initExcelTable(excelReadTable);
                 List<Object> list = readContext.readExcelTable(excelReadTable);
                 readTableMap.put(excelReadTable.getTableNo(), list);
                 if (i < size - 1) {
                     Integer lastRowIndex = excelReadTable.getLastRowIndex();
                     excelReadTable = excelReadTables.get(i + 1);
-                    excelReadTable.setStartRowIndex(lastRowIndex + excelReadTable.getSpaceRowSize());
+                    excelReadTable.setStartRowIndex(lastRowIndex);
                 }
             }
         }

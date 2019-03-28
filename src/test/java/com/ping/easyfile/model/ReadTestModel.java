@@ -1,6 +1,6 @@
 package com.ping.easyfile.model;
 
-import com.ping.easyfile.annotation.ExcelColumn;
+import com.ping.easyfile.annotation.ExcelReadProperty;
 import com.ping.easyfile.excelmeta.BaseRowModel;
 
 import java.math.BigDecimal;
@@ -12,18 +12,20 @@ import java.util.Date;
  * @see
  */
 public class ReadTestModel extends BaseRowModel {
-    @ExcelColumn(index = 0)
+    @ExcelReadProperty(index = 0)
     private String a;
-    @ExcelColumn(index = 1)
+    @ExcelReadProperty(index = 1)
     private BigDecimal d;
-    @ExcelColumn(index = 2)
+    @ExcelReadProperty(index = 2)
     private int c;
-    @ExcelColumn(index = 3)
+    @ExcelReadProperty(index = 3)
     private Double b;
-    @ExcelColumn(index = 4)
+    @ExcelReadProperty(index = 4)
     private Integer e;
-    @ExcelColumn(index = 5,format = "HH:mm:ss")
+    @ExcelReadProperty(index = 5, format = "HH:mm:ss")
     private Date date;
+    @ExcelReadProperty(index = 6)
+    private String phone;
 
     public String getA() {
         return a;
@@ -71,5 +73,13 @@ public class ReadTestModel extends BaseRowModel {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

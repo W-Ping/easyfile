@@ -1,6 +1,6 @@
 package com.ping.easyfile.model;
 
-import com.ping.easyfile.annotation.ExcelColumn;
+import com.ping.easyfile.annotation.ExcelReadProperty;
 import com.ping.easyfile.excelmeta.BaseRowModel;
 
 import java.math.BigDecimal;
@@ -12,24 +12,26 @@ import java.util.Date;
  * @see
  */
 public class ReadTest2Model extends BaseRowModel {
-    @ExcelColumn(index = 0)
+    @ExcelReadProperty(index = 0)
     private String a1;
-    @ExcelColumn(index = 1)
+    @ExcelReadProperty(index = 1)
     private int a2;
-    @ExcelColumn(index = 2)
+    @ExcelReadProperty(index = 2)
     private Double a3;
-    @ExcelColumn(index = 3)
+    @ExcelReadProperty(index = 3)
     private BigDecimal a4;
-    @ExcelColumn(index = 4)
+    @ExcelReadProperty(index = 4)
     private Date a5;
-    @ExcelColumn(index = 5)
-    private String a6;
-    @ExcelColumn(index = 6)
-    private String a7;
-    @ExcelColumn(index = 7)
+    @ExcelReadProperty(index = 5)
+    private Float a6;
+    @ExcelReadProperty(index = 6)
+    private float a7;
+    @ExcelReadProperty(index = 7)
     private Integer a8;
-    @ExcelColumn(index = 8,format = "yyyy年MM月dd日 HH时mm分ss秒")
+    @ExcelReadProperty(index = 8, format = "yyyy年MM月dd日 HH时mm分ss秒")
     private String a9;
+    @ExcelReadProperty(index = 9)
+    private String a10;
 
     public String getA1() {
         return a1;
@@ -71,19 +73,19 @@ public class ReadTest2Model extends BaseRowModel {
         this.a5 = a5;
     }
 
-    public String getA6() {
+    public Float getA6() {
         return a6;
     }
 
-    public void setA6(String a6) {
+    public void setA6(Float a6) {
         this.a6 = a6;
     }
 
-    public String getA7() {
+    public float getA7() {
         return a7;
     }
 
-    public void setA7(String a7) {
+    public void setA7(float a7) {
         this.a7 = a7;
     }
 
@@ -101,5 +103,13 @@ public class ReadTest2Model extends BaseRowModel {
 
     public void setA9(String a9) {
         this.a9 = a9;
+    }
+
+    public String getA10() {
+        return a10;
+    }
+
+    public void setA10(String a10) {
+        this.a10 = a10;
     }
 }

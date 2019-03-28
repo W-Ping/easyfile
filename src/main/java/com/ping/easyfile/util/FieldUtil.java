@@ -1,9 +1,8 @@
 package com.ping.easyfile.util;
 
-import com.ping.easyfile.annotation.ExcelProperty;
+import com.ping.easyfile.annotation.ExcelWriteProperty;
 import com.ping.easyfile.excelmeta.BaseColumnProperty;
 import com.ping.easyfile.excelmeta.BaseRowModel;
-import com.ping.easyfile.excelmeta.ExcelColumnProperty;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Constructor;
@@ -26,7 +25,7 @@ public class FieldUtil {
     public static <T extends BaseColumnProperty> T annotationToObject(Field field, Class<T> tClass) {
         T t = null;
         try {
-            ExcelProperty annotation = field.getAnnotation(ExcelProperty.class);
+            ExcelWriteProperty annotation = field.getAnnotation(ExcelWriteProperty.class);
             if (null != annotation && null != tClass) {
                 String format = annotation.format();
                 Class<?>[] fieldClass = {Field.class, int.class, List.class};

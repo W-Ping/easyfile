@@ -1,6 +1,6 @@
 package com.ping.easyfile.context;
 
-import com.ping.easyfile.annotation.ExcelColumn;
+import com.ping.easyfile.annotation.ExcelReadProperty;
 import com.ping.easyfile.em.DateTypeEnum;
 import com.ping.easyfile.em.ExcelTypeEnum;
 import com.ping.easyfile.excelmeta.BaseRowModel;
@@ -34,6 +34,47 @@ public class ReadContext {
         this.workbook = WorkBookUtil.createWorkBookWithStream(inputStream, this.excelType);
     }
 
+    public void initExcelTable(ExcelReadTable excelReadTable) {
+        int startCellIndex = excelReadTable.getStartCellIndex();
+        Integer lastCellIndex = excelReadTable.getLastCellIndex();
+        if (startCellIndex > 0 || lastCellIndex != null) {
+            return;
+        }
+        Class<? extends BaseRowModel> dataModelClass = excelReadTable.getDataModelClass();
+        Field[] declaredFields = dataModelClass.getDeclaredFields();
+        int maxIndex = 0;
+        int minIndex = 0;
+        for (Field f : declaredFields) {
+            ExcelReadProperty annotation = f.getAnnotation(ExcelReadProperty.class);
+            if (annotation != null) {
+                int index = annotation.index();
+                maxIndex = swap(maxIndex, index, "max");
+                minIndex = swap(minIndex, index, "min");
+            }
+        }
+        excelReadTable.setStartCellIndex(minIndex);
+        excelReadTable.setLastCellIndex(maxIndex);
+    }
+
+    private int swap(int a, int b, String type) {
+        switch (type) {
+            case "max":
+                if (a < b) {
+                    a = b;
+                }
+                break;
+            case "min":
+                if (a > b) {
+                    a = b;
+                }
+                break;
+            default:
+                a = b;
+                break;
+        }
+        return a;
+    }
+
     public List<Object> readExcelTable(ExcelReadTable excelReadTable) throws ExcelParseException {
         List<Object> list = new ArrayList<>();
         this.currentSheet = this.workbook.getSheetAt(excelReadTable.getSheetNo());
@@ -45,14 +86,18 @@ public class ReadContext {
         int startCellIndex = excelReadTable.getStartCellIndex();
         Integer lastCellIndex = excelReadTable.getLastCellIndex();
         Class<? extends BaseRowModel> dataModelClass = excelReadTable.getDataModelClass();
-        int physicalNumberOfRows = this.currentSheet.getPhysicalNumberOfRows();
+        int lastRowNum = this.currentSheet.getLastRowNum();
         Object obj = null;
-
+        int emptyRow = 0;
         do {
             Row row = this.currentSheet.getRow(startContentRowIndex);
+            startContentRowIndex++;
+            if (row == null) {
+                emptyRow++;
+                continue;
+            }
             //table 循环结束条件
-            if (row == null || (null != lastRowIndex && lastRowIndex == startContentRowIndex)) {
-                excelReadTable.setLastRowIndex(startContentRowIndex);
+            if (emptyRow > 0 || (null != lastRowIndex && lastRowIndex == startContentRowIndex)) {
                 break;
             }
             try {
@@ -74,17 +119,20 @@ public class ReadContext {
                 }
                 addExcelValueToObject(cell, obj);
             }
-            startContentRowIndex++;
             if (!rowIsEmpty) {
                 list.add(obj);
             }
-        } while (startContentRowIndex <= physicalNumberOfRows);
+        } while (startContentRowIndex <= lastRowNum);
+        //最后一行
+        excelReadTable.setLastRowIndex(startContentRowIndex - 1);
         return list;
     }
 
 
     private void addExcelValueToObject(Cell cell, Object obj) {
-        if (null == cell) return;
+        if (null == cell) {
+            return;
+        }
         Class<?> aClass = obj.getClass();
         Field[] declaredFields = aClass.getDeclaredFields();
         int columnIndex = cell.getColumnIndex();
@@ -93,11 +141,14 @@ public class ReadContext {
         try {
             for (Field f : declaredFields) {
                 f.setAccessible(true);
-                ExcelColumn annotation = f.getAnnotation(ExcelColumn.class);
+                ExcelReadProperty annotation = f.getAnnotation(ExcelReadProperty.class);
                 if (annotation != null) {
                     int index = annotation.index();
                     if (columnIndex == index) {
                         CellType cellTypeEnum = cell.getCellTypeEnum();
+                        if (CellType.BLANK.equals(cellTypeEnum)) {
+                            continue;
+                        }
                         if (cellTypeEnum.equals(CellType.NUMERIC)
                                 && org.apache.poi.ss.usermodel.DateUtil.isCellDateFormatted(cell, null)) {
                             String format = annotation.format();
