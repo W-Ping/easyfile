@@ -1,14 +1,14 @@
 package com.ping.easyfile;
 
 import com.ping.easyfile.constant.FileConstant;
-import com.ping.easyfile.core.excel.ReadBuilderImpl;
-import com.ping.easyfile.core.handler.ExportHandler;
+import com.ping.easyfile.core.handler.ExcelReadHandler;
+import com.ping.easyfile.core.handler.ExportWriteHandler;
 import com.ping.easyfile.em.ExcelTypeEnum;
 import com.ping.easyfile.excelmeta.ExcelReadTable;
 import com.ping.easyfile.excelmeta.ExcelSheet;
 import com.ping.easyfile.excelmeta.ExcelTable;
-import com.ping.easyfile.request.ExportExcelParam;
-import com.ping.easyfile.response.ExportExcelResponse;
+import com.ping.easyfile.request.ExcelWriteParam;
+import com.ping.easyfile.response.ExcelWriteResponse;
 import com.ping.easyfile.util.FileUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -33,36 +33,36 @@ public class EasyFileApplication {
      * @param param
      * @return
      */
-    public static ExportExcelResponse exportV2007(ExportExcelParam param) {
+    public static ExcelWriteResponse exportV2007(ExcelWriteParam param) {
         logger.info("export excel startTime:" + System.currentTimeMillis());
         InputStream inputStream = null;
         OutputStream outputStream = null;
-        ExportExcelResponse exportExcelResponse = new ExportExcelResponse();
+        ExcelWriteResponse excelWriteResponse = new ExcelWriteResponse();
         try {
             validateParam(param, ExcelTypeEnum.XLSX);
             inputStream = FileUtil.getResourcesFileInputStream(param.getExcelTemplateFile());
             outputStream = FileUtil.synGetResourcesFileOutputStream(param.getExcelOutFilePath(), param.getExcelFileName());
-            ExportHandler exportHandler = new ExportHandler(inputStream, outputStream, ExcelTypeEnum.XLSX);
+            ExportWriteHandler exportHandler = new ExportWriteHandler(inputStream, outputStream, ExcelTypeEnum.XLSX);
             List<ExcelSheet> excelSheets = param.getExcelSheets();
             exportHandler.exportExcelV2007(excelSheets);
-            exportExcelResponse = new ExportExcelResponse(FileConstant.SUCCESS_CODE, param.getExcelOutFileFullPath());
+            excelWriteResponse = new ExcelWriteResponse(FileConstant.SUCCESS_CODE, param.getExcelOutFileFullPath());
         } catch (Exception e) {
             e.printStackTrace();
-            exportExcelResponse.setMessage(e.getMessage());
+            excelWriteResponse.setMessage(e.getMessage());
         } finally {
             FileUtil.close(inputStream, outputStream);
         }
         logger.info("export excel endTime:" + System.currentTimeMillis());
-        return exportExcelResponse;
+        return excelWriteResponse;
     }
 
     /**
      * @param param
      * @return
      */
-    public static ExportExcelResponse exportV2007WithTemp(ExportExcelParam param) {
+    public static ExcelWriteResponse exportV2007WithTemp(ExcelWriteParam param) {
         if (StringUtils.isBlank(param.getExcelTemplateFile())) {
-            return ExportExcelResponse.fail("excel template is null");
+            return ExcelWriteResponse.fail("excel template is null");
         }
         return exportV2007(param);
     }
@@ -74,31 +74,31 @@ public class EasyFileApplication {
      */
     public static Map<Integer, List<Object>> readExcel(String excelPath, List<ExcelReadTable> excelReadTables) {
         logger.info("read excel startTime:" + System.currentTimeMillis());
-        Map<Integer, List<Object>> read = null;
+        Map<Integer, List<Object>> result = null;
         InputStream inputStream = null;
         try {
             inputStream = FileUtil.getResourcesFileInputStream(excelPath);
-            ReadBuilderImpl readBuilder = new ReadBuilderImpl(inputStream);
-            read = readBuilder.read(excelReadTables);
+            ExcelReadHandler excelReadHandler = new ExcelReadHandler(inputStream);
+            result = excelReadHandler.read(excelReadTables);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             FileUtil.close(inputStream, null);
         }
         logger.info("read excel endTime:" + System.currentTimeMillis());
-        return read;
+        return result;
     }
 
     /**
-     * @param exportExcelParam
+     * @param excelWriteParam
      * @param excelTypeEnum
      * @throws ExportException
      */
-    private static void validateParam(ExportExcelParam exportExcelParam, ExcelTypeEnum excelTypeEnum) throws ExportException {
-        if (StringUtils.isBlank(exportExcelParam.getExcelOutFilePath())) {
-            exportExcelParam.setExcelOutFilePath(FileUtil.createTempDirectory());
+    private static void validateParam(ExcelWriteParam excelWriteParam, ExcelTypeEnum excelTypeEnum) throws ExportException {
+        if (StringUtils.isBlank(excelWriteParam.getExcelOutFilePath())) {
+            excelWriteParam.setExcelOutFilePath(FileUtil.createTempDirectory());
         }
-        String excelFileName = exportExcelParam.getExcelFileName();
+        String excelFileName = excelWriteParam.getExcelFileName();
         if (StringUtils.isBlank(excelFileName)) {
             throw new ExportException("excel fileName is null");
         } else {
@@ -114,7 +114,7 @@ public class EasyFileApplication {
                 throw new ExportException("excel fileName is error");
             }
         }
-        validateSheets(exportExcelParam.getExcelSheets());
+        validateSheets(excelWriteParam.getExcelSheets());
     }
 
     private static void validateSheets(List<ExcelSheet> excelSheets) throws ExportException {

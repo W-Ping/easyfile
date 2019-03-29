@@ -17,7 +17,11 @@ public class ExcelSheet {
     private boolean isAutoLayOut = true;
     private List<ExcelTable> excelTables;
     private Map<Integer, Integer> columnWidthMap = new HashMap<>();
-    private List<Integer[]> mergeData;//Integer[]={startRow,lastRow,startCell,endCell}
+
+    /**
+     * Integer[]={startRow,lastRow,startCell,endCell}
+     */
+    private List<Integer[]> mergeData;
 
     public ExcelSheet(int sheetNo, String sheetName, List<ExcelTable> excelTables, boolean isAutoLayOut) {
         this.sheetName = sheetName;

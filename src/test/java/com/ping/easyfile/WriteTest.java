@@ -7,11 +7,14 @@ import com.ping.easyfile.excelmeta.ExcelFont;
 import com.ping.easyfile.excelmeta.ExcelSheet;
 import com.ping.easyfile.excelmeta.ExcelStyle;
 import com.ping.easyfile.excelmeta.ExcelTable;
+import com.ping.easyfile.handler.WriteAfterHandlerImpl;
+import com.ping.easyfile.handler.WriteBeforHandler2Impl;
+import com.ping.easyfile.handler.WriteBeforHandlerImpl;
 import com.ping.easyfile.model.ExcelTest2Model;
 import com.ping.easyfile.model.ExportTest3Model;
 import com.ping.easyfile.model.ExportTestModel;
-import com.ping.easyfile.request.ExportExcelParam;
-import com.ping.easyfile.response.ExportExcelResponse;
+import com.ping.easyfile.request.ExcelWriteParam;
+import com.ping.easyfile.response.ExcelWriteResponse;
 import com.ping.easyfile.util.JSONUtil;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.junit.Assert;
@@ -29,39 +32,8 @@ import java.util.Map;
  * @date Created in 2019/3/7 15:59
  * @see
  */
-public class ExportTest {
-    private static Logger logger = LoggerFactory.getLogger(ExportTest.class);
-
-    @Test
-    public void exportV2007() {
-        String outFilePath = "/opt/excel";
-        String outFileName = TestData.createUniqueFileName("export") + ".xlsx";
-        ExcelTable excelTable = new ExcelTable(1, null, ExportTestModel.class, TestData.createTestListJavaMode());
-        excelTable.setFirstCellIndex(1);
-        excelTable.setFirstRowIndex(1);
-        ExcelTable excelTable1 = new ExcelTable(2, null, ExcelTest2Model.class, TestData.createTestListJavaMode2());
-        excelTable1.setFirstCellIndex(excelTable.getTableCellRange().getLastCellIndex() + 1);
-        excelTable1.setFirstRowIndex(0);
-        ExcelTable excelTable2 = new ExcelTable(3, null, ExcelTest2Model.class, TestData.createTestListJavaMode2());
-        excelTable2.setFirstCellIndex(excelTable1.getTableCellRange().getLastCellIndex() + 1);
-        excelTable2.setFirstRowIndex(1);
-        List<ExcelTable> excelTables = new ArrayList<>();
-        excelTables.add(excelTable);
-        excelTables.add(excelTable2);
-        excelTables.add(excelTable1);
-        ExcelSheet sheet = new ExcelSheet(0, "测试1", excelTables);
-        ExcelSheet sheet1 = new ExcelSheet(1, "测试2", excelTables);
-        List<ExcelSheet> sheets = new ArrayList<>();
-        sheets.add(sheet);
-        sheets.add(sheet1);
-        ExportExcelParam exportExcelParam = new ExportExcelParam();
-        exportExcelParam.setExcelFileName(outFileName);
-        exportExcelParam.setExcelOutFilePath(outFilePath);
-        exportExcelParam.setExcelSheets(sheets);
-        ExportExcelResponse export = EasyFileApplication.exportV2007(exportExcelParam);
-        logger.info("export result:{}", JSONUtil.objectToString(export));
-        Assert.assertEquals(export.getCode(), FileConstant.SUCCESS_CODE);
-    }
+public class WriteTest {
+    private static Logger logger = LoggerFactory.getLogger(WriteTest.class);
 
     @Test
     public void exportV2007WithLayout() {
@@ -125,11 +97,11 @@ public class ExportTest {
             add(sheet1);
             add(sheet2);
         }};
-        ExportExcelParam exportExcelParam = new ExportExcelParam();
-        exportExcelParam.setExcelFileName(outFileName);
-        exportExcelParam.setExcelOutFilePath(outFilePath);
-        exportExcelParam.setExcelSheets(sheets);
-        ExportExcelResponse export = EasyFileApplication.exportV2007(exportExcelParam);
+        ExcelWriteParam excelWriteParam = new ExcelWriteParam();
+        excelWriteParam.setExcelFileName(outFileName);
+        excelWriteParam.setExcelOutFilePath(outFilePath);
+        excelWriteParam.setExcelSheets(sheets);
+        ExcelWriteResponse export = EasyFileApplication.exportV2007(excelWriteParam);
         logger.info("export result:{}", JSONUtil.objectToString(export));
         Assert.assertEquals(export.getCode(), FileConstant.SUCCESS_CODE);
     }
@@ -148,11 +120,11 @@ public class ExportTest {
         List<ExcelSheet> sheets = new ArrayList<ExcelSheet>() {{
             add(sheet1);
         }};
-        ExportExcelParam exportExcelParam = new ExportExcelParam();
-        exportExcelParam.setExcelFileName(outFileName);
-        exportExcelParam.setExcelOutFilePath(outFilePath);
-        exportExcelParam.setExcelSheets(sheets);
-        ExportExcelResponse export = EasyFileApplication.exportV2007(exportExcelParam);
+        ExcelWriteParam excelWriteParam = new ExcelWriteParam();
+        excelWriteParam.setExcelFileName(outFileName);
+        excelWriteParam.setExcelOutFilePath(outFilePath);
+        excelWriteParam.setExcelSheets(sheets);
+        ExcelWriteResponse export = EasyFileApplication.exportV2007(excelWriteParam);
         logger.info("export result:{}", JSONUtil.objectToString(export));
         Assert.assertEquals(export.getCode(), FileConstant.SUCCESS_CODE);
     }
@@ -188,21 +160,24 @@ public class ExportTest {
             add(sheet1);
             add(sheet2);
         }};
-        ExportExcelParam exportExcelParam = new ExportExcelParam();
-        exportExcelParam.setExcelFileName(outFileName);
-        exportExcelParam.setExcelOutFilePath(outFilePath);
-        exportExcelParam.setExcelSheets(sheets);
-        ExportExcelResponse export = EasyFileApplication.exportV2007(exportExcelParam);
+        ExcelWriteParam excelWriteParam = new ExcelWriteParam();
+        excelWriteParam.setExcelFileName(outFileName);
+        excelWriteParam.setExcelOutFilePath(outFilePath);
+        excelWriteParam.setExcelSheets(sheets);
+        ExcelWriteResponse export = EasyFileApplication.exportV2007(excelWriteParam);
         logger.info("export result:{}", JSONUtil.objectToString(export));
         Assert.assertEquals(export.getCode(), FileConstant.SUCCESS_CODE);
     }
 
     @Test
-    public void exportV2007WithAfterHandler() {
+    public void exportV2007WithHandler() {
         String outFilePath = "/opt/excel_style";
         String outFileName = TestData.createUniqueFileName("export") + ".xlsx";
         ExcelTable excelTable1 = new ExcelTable(1, null, ExportTestModel.class, TestData.createTestListJavaModeStyle());
+        excelTable1.setiWriteAfterHandler(new WriteAfterHandlerImpl());
+        excelTable1.setiWriteBeforHandler(new WriteBeforHandlerImpl());
         ExcelTable excelTable2 = new ExcelTable(2, null, ExcelTest2Model.class, TestData.createTestListJavaMode2());
+        excelTable2.setiWriteBeforHandler(new WriteBeforHandler2Impl());
         List<ExcelTable> excelTables = new ArrayList<ExcelTable>() {{
             add(excelTable1);
             add(excelTable2);
@@ -211,11 +186,11 @@ public class ExportTest {
         List<ExcelSheet> sheets = new ArrayList<ExcelSheet>() {{
             add(sheet1);
         }};
-        ExportExcelParam exportExcelParam = new ExportExcelParam();
-        exportExcelParam.setExcelFileName(outFileName);
-        exportExcelParam.setExcelOutFilePath(outFilePath);
-        exportExcelParam.setExcelSheets(sheets);
-        ExportExcelResponse export = EasyFileApplication.exportV2007(exportExcelParam);
+        ExcelWriteParam excelWriteParam = new ExcelWriteParam();
+        excelWriteParam.setExcelFileName(outFileName);
+        excelWriteParam.setExcelOutFilePath(outFilePath);
+        excelWriteParam.setExcelSheets(sheets);
+        ExcelWriteResponse export = EasyFileApplication.exportV2007(excelWriteParam);
         logger.info("export result:{}", JSONUtil.objectToString(export));
         Assert.assertEquals(export.getCode(), FileConstant.SUCCESS_CODE);
     }

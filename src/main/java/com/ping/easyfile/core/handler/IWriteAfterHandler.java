@@ -4,12 +4,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
-public interface IExportAfterHandler {
-    /**
-     * @param sheetNo
-     * @param sheet
-     */
-    void sheet(int sheetNo, Sheet sheet);
+public interface IWriteAfterHandler {
 
     /**
      * @param rowNum

@@ -1,7 +1,6 @@
 package com.ping.easyfile.core.excel;
 
-import com.ping.easyfile.context.ExportContext;
-import com.ping.easyfile.core.handler.IExportAfterHandler;
+import com.ping.easyfile.context.WriteContext;
 import com.ping.easyfile.em.BorderEnum;
 import com.ping.easyfile.em.ExcelTypeEnum;
 import com.ping.easyfile.excelmeta.*;
@@ -20,29 +19,25 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author liu_wp
  * @date Created in 2019/3/6 10:22
  * @see
  */
-public class ExcelBuilderImpl implements IExcelBuilder {
-    private ExportContext context;
+public class WriteBuilderImpl implements IWriteBuilder {
+    private WriteContext context;
+    private Map<Integer, CellStyle> cellStyleMap;
 
-    public ExcelBuilderImpl(InputStream templateInputStream,
+    public WriteBuilderImpl(InputStream templateInputStream,
                             OutputStream outputStream,
-                            ExcelTypeEnum excelType, IExportAfterHandler iExportAfterHandler) {
+                            ExcelTypeEnum excelType) {
         try {
-            context = new ExportContext(templateInputStream, outputStream, excelType, iExportAfterHandler);
+            context = new WriteContext(templateInputStream, outputStream, excelType);
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public ExcelBuilderImpl(InputStream templateInputStream,
-                            OutputStream outputStream,
-                            ExcelTypeEnum excelType) {
-        this(templateInputStream, outputStream, excelType, null);
     }
 
     @Override
@@ -50,6 +45,7 @@ public class ExcelBuilderImpl implements IExcelBuilder {
         context.currentSheet(excelSheet);
         List<ExcelTable> excelTables = excelSheet.getExcelTables();
         for (ExcelTable excelTable : excelTables) {
+            cellStyleMap = null;
             context.initTable(excelTable);
             this.addContent(excelTable);
         }
@@ -70,9 +66,12 @@ public class ExcelBuilderImpl implements IExcelBuilder {
         if (CollectionUtils.isEmpty(data)) {
             return;
         }
+        if (table.getiWriteBeforHandler() != null) {
+            cellStyleMap = table.getiWriteBeforHandler().initCellStyle(context.getWorkbook());
+        }
         for (int i = 0; i < data.size(); i++) {
             int n = i + startRow;
-            addOneRowDataToExcel(data.get(i), n, table.getFirstCellIndex(), currentCellStyle, table.getExcelHeadProperty());
+            addOneRowDataToExcel(data.get(i), n, currentCellStyle, table);
             StyleUtil.buildCellBorderStyle(currentCellStyle, 0, i == 0 && !table.isNeedHead(), BorderEnum.TOP);
         }
     }
@@ -99,50 +98,53 @@ public class ExcelBuilderImpl implements IExcelBuilder {
         }
     }
 
-    private void addOneRowDataToExcel(Object oneRowData, int n, int startCellIndex, CellStyle cellStyle, ExcelHeadProperty excelHeadProperty) {
+    private void addOneRowDataToExcel(Object oneRowData, int n, CellStyle cellStyle, ExcelTable excelTable) {
         Row row = WorkBookUtil.createOrGetRow(context.getCurrentSheet(), n);
-        if (context.getiExportAfterHandler() != null) {
-            context.getiExportAfterHandler().row(n, row);
+        if (excelTable.getiWriteAfterHandler() != null) {
+            excelTable.getiWriteAfterHandler().row(n, row);
         }
         if (oneRowData instanceof List) {
-            addBasicTypeToExcel((List) oneRowData, row, cellStyle, startCellIndex);
+            addBasicTypeToExcel((List) oneRowData, row, cellStyle, excelTable);
         } else {
-            addObjectToExcel(oneRowData, row, cellStyle, startCellIndex, excelHeadProperty);
+            addObjectToExcel(oneRowData, row, cellStyle, excelTable);
         }
     }
 
-    private void addBasicTypeToExcel(List<Object> oneRowData, Row row, CellStyle cellStyle, int startCellIndex) {
+    private void addBasicTypeToExcel(List<Object> oneRowData, Row row, CellStyle cellStyle, ExcelTable excelTable) {
         if (CollectionUtils.isEmpty(oneRowData)) {
             return;
         }
         for (int i = 0; i < oneRowData.size(); i++) {
             Object cellValue = oneRowData.get(i);
-            Cell cell = WorkBookUtil.createCell(row, i + startCellIndex, cellStyle, cellValue,
+            Cell cell = WorkBookUtil.createCell(row, i + excelTable.getFirstCellIndex(), cellStyle, cellValue,
                     TypeUtil.isNum(cellValue));
-            if (context.getiExportAfterHandler() != null) {
-                context.getiExportAfterHandler().cell(i, cell);
+            if (excelTable.getiWriteAfterHandler() != null) {
+                excelTable.getiWriteAfterHandler().cell(i, cell);
             }
         }
     }
 
-    private void addObjectToExcel(Object oneRowData, Row row, CellStyle cellStyle, int startCellIndex, ExcelHeadProperty excelHeadProperty) {
+    private void addObjectToExcel(Object oneRowData, Row row, CellStyle cellStyle, ExcelTable excelTable) {
+        int startCellIndex = excelTable.getFirstCellIndex();
         BeanMap beanMap = BeanMap.create(oneRowData);
-        List<ExcelColumnProperty> columnPropertyList = excelHeadProperty.getColumnPropertyList();
+        List<ExcelColumnProperty> columnPropertyList = excelTable.getExcelHeadProperty().getColumnPropertyList();
         if (!CollectionUtils.isEmpty(columnPropertyList)) {
             int lastIndex = columnPropertyList.size() - 1;
             for (int i = 0; i < columnPropertyList.size(); i++) {
-                BaseRowModel baseRowModel = (BaseRowModel) oneRowData;
+//                BaseRowModel baseRowModel = (BaseRowModel) oneRowData;
                 ExcelColumnProperty excelColumnProperty = columnPropertyList.get(i);
                 String cellValue = TypeUtil.getFieldStringValue(beanMap, excelColumnProperty.getField().getName(),
                         excelColumnProperty.getFormat());
-                cellStyle = baseRowModel.getStyle(i) != null ? baseRowModel.getStyle(i)
-                        : cellStyle;
                 StyleUtil.buildCellBorderStyle(cellStyle, 0, 0 == i, BorderEnum.LEFT);
                 StyleUtil.buildCellBorderStyle(cellStyle, lastIndex, lastIndex == i, BorderEnum.RIGHT);
-                Cell cell = WorkBookUtil.createCell(row, i + startCellIndex, cellStyle, cellValue,
+                CellStyle cellStyle1 = cellStyle;
+                if (null != cellStyleMap && null != cellStyleMap.get(i + startCellIndex)) {
+                    cellStyle1 = cellStyleMap.get(i + startCellIndex);
+                }
+                Cell cell = WorkBookUtil.createCell(row, i + startCellIndex, cellStyle1, cellValue,
                         TypeUtil.isNum(excelColumnProperty.getField()));
-                if (context.getiExportAfterHandler() != null) {
-                    context.getiExportAfterHandler().cell(i, cell);
+                if (excelTable.getiWriteAfterHandler() != null) {
+                    excelTable.getiWriteAfterHandler().cell(i, cell);
                 }
             }
         }

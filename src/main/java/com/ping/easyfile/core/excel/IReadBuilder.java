@@ -11,5 +11,9 @@ import java.util.Map;
  * @see
  */
 public interface IReadBuilder {
+    /**
+     * @param excelReadTables
+     * @return
+     */
     Map<Integer, List<Object>> read(List<ExcelReadTable> excelReadTables);
 }

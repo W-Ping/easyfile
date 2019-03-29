@@ -10,7 +10,7 @@ import java.util.List;
  * @date Created in 2019/2/28 18:01
  * @see
  */
-public class ExportExcelParam {
+public class ExcelWriteParam {
     /**
      * excel 模板文件
      */
