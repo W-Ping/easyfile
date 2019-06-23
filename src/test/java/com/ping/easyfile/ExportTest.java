@@ -158,6 +158,16 @@ public class ExportTest {
     }
 
     @Test
+    public void tt() {
+        int a = 100;
+        int c = a >> 2;
+        int c1 = a >> 4;//a/2*2*2*2;
+        int c2 = a << 3;//a/2*2*2*2;
+        int c3 = a ^ 100;//a/2*2*2*2;
+        System.out.println(c3);
+    }
+
+    @Test
     public void exportV2007WithNohead() {
         String outFilePath = "/opt/excel_head";
         String outFileName = TestData.createUniqueFileName("export") + ".xlsx";
