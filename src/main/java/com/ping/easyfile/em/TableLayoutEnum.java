@@ -6,5 +6,9 @@ package com.ping.easyfile.em;
  * @see
  */
 public enum TableLayoutEnum {
-    RIGHT, BOTTOM
+    /**
+     *
+     */
+    RIGHT,
+    BOTTOM
 }

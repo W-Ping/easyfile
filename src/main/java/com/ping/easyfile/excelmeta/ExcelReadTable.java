@@ -1,18 +1,44 @@
 package com.ping.easyfile.excelmeta;
 
 /**
+ * Excel 解析对象
+ *
  * @author liu_wp
  * @date Created in 2019/3/22 14:26
  * @see
  */
 public class ExcelReadTable implements Comparable<ExcelReadTable> {
-    private int tableNo;
+    /**
+     * 解析的sheet 默认0
+     */
     private int sheetNo = 0;
+    /**
+     * 唯一表编号 （Excel的数据是多张表格组成的）
+     */
+    private int tableNo;
+    /**
+     * 解析Excel Model（当前表格对应的Model）
+     */
     private Class<? extends BaseRowModel> dataModelClass;
+    /**
+     * 开始单元个索引
+     */
     private int startCellIndex;
-    private int startRowIndex;
+    /**
+     * 最后单元格索引
+     */
     private Integer lastCellIndex;
+    /**
+     * 开始行索引
+     */
+    private int startRowIndex;
+    /**
+     * 最后一行索引
+     */
     private Integer lastRowIndex;
+    /**
+     * 表头占用的行数 默认1行
+     */
     private int headSize = 1;
 
     public ExcelReadTable(int tableNo) {

@@ -6,6 +6,9 @@ package com.ping.easyfile.em;
  * @see
  */
 public enum TableBodyEnum {
+    /**
+     *
+     */
     HEAD("head"), CONTENT("content"), FOOT("foot");
     private String name;
 

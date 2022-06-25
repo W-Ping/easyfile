@@ -11,17 +11,23 @@ import com.ping.easyfile.excelmeta.ExcelTable;
 public interface IWriteBuilder {
 
     /**
+     * 添加 excel sheet
+     *
      * @param excelSheet
      */
     void addContent(ExcelSheet excelSheet);
 
 
     /**
+     * 添加 excel table
+     *
      * @param table
      */
     void addContent(ExcelTable table);
 
     /**
+     * 合并行和列
+     *
      * @param startRow
      * @param endRow
      * @param startCell
@@ -30,7 +36,7 @@ public interface IWriteBuilder {
     void merge(int startRow, int endRow, int startCell, int endCell);
 
     /**
-     *
+     * 操作完成
      */
     void finish();
 }

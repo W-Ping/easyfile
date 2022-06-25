@@ -7,6 +7,8 @@ import com.ping.easyfile.em.ExcelTypeEnum;
 import com.ping.easyfile.excelmeta.ExcelReadTable;
 import com.ping.easyfile.excelmeta.ExcelSheet;
 import com.ping.easyfile.excelmeta.ExcelTable;
+import com.ping.easyfile.exception.ExcelExportException;
+import com.ping.easyfile.exception.ExcelParseException;
 import com.ping.easyfile.request.ExcelWriteParam;
 import com.ping.easyfile.response.ExcelWriteResponse;
 import com.ping.easyfile.util.FileUtil;
@@ -26,10 +28,12 @@ import java.util.Map;
  * @date Created in 2019/3/1 10:23
  * @see
  */
-public class EasyFileApplication {
+public final class EasyFileApplication {
     private static Logger logger = LoggerFactory.getLogger(EasyFileApplication.class);
 
     /**
+     * 导出Excel xlsx
+     *
      * @param param
      * @return
      */
@@ -47,7 +51,8 @@ public class EasyFileApplication {
             exportHandler.exportExcelV2007(excelSheets);
             excelWriteResponse = new ExcelWriteResponse(FileConstant.SUCCESS_CODE, param.getExcelOutFileFullPath());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("export excel is fail {}", e.getMessage());
+            excelWriteResponse.setCode(FileConstant.FAIL_CODE);
             excelWriteResponse.setMessage(e.getMessage());
         } finally {
             FileUtil.close(inputStream, outputStream);
@@ -57,6 +62,8 @@ public class EasyFileApplication {
     }
 
     /**
+     * 导出Excel xlsx(使用导出模板)
+     *
      * @param param
      * @return
      */
@@ -68,8 +75,10 @@ public class EasyFileApplication {
     }
 
     /**
-     * @param excelReadTables
-     * @param excelPath
+     * 读取 Excel
+     *
+     * @param excelPath       Excel 路径
+     * @param excelReadTables Excel 表信息
      * @return
      */
     public static Map<Integer, List<Object>> readExcel(String excelPath, List<ExcelReadTable> excelReadTables) {
@@ -81,7 +90,8 @@ public class EasyFileApplication {
             ExcelReadHandler excelReadHandler = new ExcelReadHandler(inputStream);
             result = excelReadHandler.read(excelReadTables);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("read excel is fail {}", e.getMessage());
+            throw new ExcelParseException(e);
         } finally {
             FileUtil.close(inputStream, null);
         }
@@ -90,57 +100,59 @@ public class EasyFileApplication {
     }
 
     /**
+     * 验证参数
+     *
      * @param excelWriteParam
      * @param excelTypeEnum
      * @throws ExportException
      */
-    private static void validateParam(ExcelWriteParam excelWriteParam, ExcelTypeEnum excelTypeEnum) throws ExportException {
+    private static void validateParam(ExcelWriteParam excelWriteParam, ExcelTypeEnum excelTypeEnum) throws ExcelExportException {
         if (StringUtils.isBlank(excelWriteParam.getExcelOutFilePath())) {
             excelWriteParam.setExcelOutFilePath(FileUtil.createTempDirectory());
         }
         String excelFileName = excelWriteParam.getExcelFileName();
         if (StringUtils.isBlank(excelFileName)) {
-            throw new ExportException("excel fileName is null");
+            throw new ExcelExportException("excel fileName is null");
         } else {
             if (excelFileName.lastIndexOf(".") != -1) {
                 if (ExcelTypeEnum.XLSX.equals(excelTypeEnum)
                         && !ExcelTypeEnum.XLSX.getValue().equals(excelFileName.substring(excelFileName.lastIndexOf(".")))) {
-                    throw new ExportException("excel fileType is not xlsx");
+                    throw new ExcelExportException("excel fileType is not xlsx");
                 } else if (ExcelTypeEnum.XLS.equals(excelTypeEnum)
                         && !ExcelTypeEnum.XLS.getValue().equals(excelFileName.substring(excelFileName.lastIndexOf(".")))) {
-                    throw new ExportException("excel fileType is not xls");
+                    throw new ExcelExportException("excel fileType is not xls");
                 }
             } else {
-                throw new ExportException("excel fileName is error");
+                throw new ExcelExportException("excel fileName is error");
             }
         }
         validateSheets(excelWriteParam.getExcelSheets());
     }
 
-    private static void validateSheets(List<ExcelSheet> excelSheets) throws ExportException {
+    private static void validateSheets(List<ExcelSheet> excelSheets) throws ExcelExportException {
         if (CollectionUtils.isEmpty(excelSheets)) {
-            throw new ExportException("excel sheet is null");
+            throw new ExcelExportException("excel sheet is null");
         }
         int sheetNo = -999;
         for (ExcelSheet sheet : excelSheets) {
             if (sheetNo == sheet.getSheetNo()) {
-                throw new ExportException("sheetNo is repetition");
+                throw new ExcelExportException("sheetNo is repetition");
             }
             sheetNo = sheet.getSheetNo();
             validateTables(sheet.getExcelTables());
         }
     }
 
-    private static void validateTables(List<ExcelTable> tables) throws ExportException {
+    private static void validateTables(List<ExcelTable> tables) throws ExcelExportException {
         if (!CollectionUtils.isEmpty(tables)) {
             int tableNo = -999;
             for (ExcelTable table : tables) {
                 if (tableNo == table.getTableNo()) {
-                    throw new ExportException("tableNo is repetition");
+                    throw new ExcelExportException("tableNo is repetition");
                 }
                 tableNo = table.getTableNo();
                 if (CollectionUtils.isEmpty(table.getHead()) && null == table.getHeadClass()) {
-                    throw new ExportException("table head arguments is null");
+                    throw new ExcelExportException("table head arguments is null");
                 }
             }
         }

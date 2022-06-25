@@ -1,5 +1,6 @@
 package com.ping.easyfile.util;
 
+import com.ping.easyfile.em.DateTypeEnum;
 import net.sf.cglib.beans.BeanMap;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
@@ -24,9 +25,9 @@ public class TypeUtil {
     private static List<String> DATE_FORMAT_LIST = new ArrayList<>(4);
 
     static {
-        DATE_FORMAT_LIST.add("yyyy/MM/dd HH:mm:ss");
-        DATE_FORMAT_LIST.add("yyyy-MM-dd HH:mm:ss");
-        DATE_FORMAT_LIST.add("yyyyMMdd HH:mm:ss");
+        DATE_FORMAT_LIST.add(DateTypeEnum.TIMESTAMP_TIME.getFormat());
+        DATE_FORMAT_LIST.add(DateTypeEnum.TIMESTAMP_OBLIQUE_TIME.getFormat());
+        DATE_FORMAT_LIST.add(DateTypeEnum.TIMESTAMP_NO_OBLIQUE_TIME.getFormat());
     }
 
     private static int getCountOfChar(String value, char c) {

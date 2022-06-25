@@ -1,7 +1,6 @@
 package com.ping.easyfile.excelmeta;
 
 import com.ping.easyfile.util.FieldUtil;
-import com.ping.easyfile.util.JSONUtil;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.lang.reflect.Field;
@@ -42,7 +41,6 @@ public class ExcelHeadProperty {
         if (headClazz != null) {
             List<Field> objectField = FieldUtil.getObjectField(headClazz);
             if (!CollectionUtils.isEmpty(objectField)) {
-                List<ExcelColumnProperty> list = new ArrayList<>();
                 for (Field f : objectField) {
                     ExcelColumnProperty excelColumnProperty = FieldUtil.annotationToObject(f, ExcelColumnProperty.class);
                     if (excelColumnProperty != null) {
@@ -51,7 +49,7 @@ public class ExcelHeadProperty {
                 }
             }
             Collections.sort(columnPropertyList);
-            List<List<String>> headList = new ArrayList<List<String>>();
+            List<List<String>> headList = new ArrayList<>();
             if (head == null || head.size() == 0) {
                 for (ExcelColumnProperty excelColumnProperty : columnPropertyList) {
                     headList.add(excelColumnProperty.getHead());

@@ -12,7 +12,11 @@ import java.io.InputStream;
  */
 public enum ExcelTypeEnum {
 
-    XLS(".xls"), XLSX(".xlsx");
+    /**
+     *
+     */
+    XLS(".xls"),
+    XLSX(".xlsx");
 
     private String value;
 

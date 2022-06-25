@@ -32,12 +32,9 @@ public class WriteBuilderImpl implements IWriteBuilder {
 
     public WriteBuilderImpl(InputStream templateInputStream,
                             OutputStream outputStream,
-                            ExcelTypeEnum excelType) {
-        try {
-            context = new WriteContext(templateInputStream, outputStream, excelType);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+                            ExcelTypeEnum excelType) throws IOException {
+        context = new WriteContext(templateInputStream, outputStream, excelType);
+
     }
 
     @Override
@@ -66,8 +63,9 @@ public class WriteBuilderImpl implements IWriteBuilder {
         if (CollectionUtils.isEmpty(data)) {
             return;
         }
-        if (table.getiWriteBeforHandler() != null) {
-            cellStyleMap = table.getiWriteBeforHandler().initCellStyle(context.getWorkbook());
+        //导出前置处理接口
+        if (table.getiWriteBeforeHandler() != null) {
+            cellStyleMap = table.getiWriteBeforeHandler().initCellStyle(context.getWorkbook());
         }
         for (int i = 0; i < data.size(); i++) {
             int n = i + startRow;
@@ -138,7 +136,7 @@ public class WriteBuilderImpl implements IWriteBuilder {
                 StyleUtil.buildCellBorderStyle(cellStyle, 0, 0 == i, BorderEnum.LEFT);
                 StyleUtil.buildCellBorderStyle(cellStyle, lastIndex, lastIndex == i, BorderEnum.RIGHT);
                 CellStyle cellStyle1 = cellStyle;
-                if (null != cellStyleMap && null != cellStyleMap.get(i + startCellIndex)) {
+                if (null != cellStyleMap && cellStyleMap.containsKey(i + startCellIndex)) {
                     cellStyle1 = cellStyleMap.get(i + startCellIndex);
                 }
                 Cell cell = WorkBookUtil.createCell(row, i + startCellIndex, cellStyle1, cellValue,

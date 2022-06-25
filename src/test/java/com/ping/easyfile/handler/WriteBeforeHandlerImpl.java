@@ -1,6 +1,6 @@
 package com.ping.easyfile.handler;
 
-import com.ping.easyfile.core.handler.IWriteBeforHandler;
+import com.ping.easyfile.core.handler.IWriteBeforeHandler;
 import org.apache.poi.ss.usermodel.*;
 
 import java.util.HashMap;
@@ -11,7 +11,7 @@ import java.util.Map;
  * @date Created in 2019/3/29 15:55
  * @see
  */
-public class WriteBeforHandlerImpl implements IWriteBeforHandler {
+public class WriteBeforeHandlerImpl implements IWriteBeforeHandler {
     @Override
     public Map<Integer, CellStyle> initCellStyle(Workbook workbook) {
         Map<Integer, CellStyle> map = new HashMap<>();

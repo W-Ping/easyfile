@@ -8,8 +8,8 @@ import com.ping.easyfile.excelmeta.ExcelSheet;
 import com.ping.easyfile.excelmeta.ExcelStyle;
 import com.ping.easyfile.excelmeta.ExcelTable;
 import com.ping.easyfile.handler.WriteAfterHandlerImpl;
-import com.ping.easyfile.handler.WriteBeforHandler2Impl;
-import com.ping.easyfile.handler.WriteBeforHandlerImpl;
+import com.ping.easyfile.handler.WriteBeforeHandler2Impl;
+import com.ping.easyfile.handler.WriteBeforeHandlerImpl;
 import com.ping.easyfile.model.ExcelTest2Model;
 import com.ping.easyfile.model.ExportTest3Model;
 import com.ping.easyfile.model.ExportTestModel;
@@ -120,10 +120,11 @@ public class WriteTest {
         List<ExcelSheet> sheets = new ArrayList<ExcelSheet>() {{
             add(sheet1);
         }};
-        ExcelWriteParam excelWriteParam = new ExcelWriteParam();
-        excelWriteParam.setExcelFileName(outFileName);
-        excelWriteParam.setExcelOutFilePath(outFilePath);
-        excelWriteParam.setExcelSheets(sheets);
+        ExcelWriteParam excelWriteParam = ExcelWriteParam.builder()
+                .excelFileName(outFileName)
+                .excelOutFilePath(outFilePath)
+                .excelSheets(sheets)
+                .build();
         ExcelWriteResponse export = EasyFileApplication.exportV2007(excelWriteParam);
         logger.info("export result:{}", JSONUtil.objectToString(export));
         Assert.assertEquals(export.getCode(), FileConstant.SUCCESS_CODE);
@@ -160,10 +161,11 @@ public class WriteTest {
             add(sheet1);
             add(sheet2);
         }};
-        ExcelWriteParam excelWriteParam = new ExcelWriteParam();
-        excelWriteParam.setExcelFileName(outFileName);
-        excelWriteParam.setExcelOutFilePath(outFilePath);
-        excelWriteParam.setExcelSheets(sheets);
+        ExcelWriteParam excelWriteParam = ExcelWriteParam.builder()
+                .excelFileName(outFileName)
+                .excelOutFilePath(outFilePath)
+                .excelSheets(sheets)
+                .build();
         ExcelWriteResponse export = EasyFileApplication.exportV2007(excelWriteParam);
         logger.info("export result:{}", JSONUtil.objectToString(export));
         Assert.assertEquals(export.getCode(), FileConstant.SUCCESS_CODE);
@@ -171,13 +173,13 @@ public class WriteTest {
 
     @Test
     public void exportV2007WithHandler() {
-        String outFilePath = "/opt/excel_style";
+        String outFilePath = "/opt/excel_handler";
         String outFileName = TestData.createUniqueFileName("export") + ".xlsx";
         ExcelTable excelTable1 = new ExcelTable(1, null, ExportTestModel.class, TestData.createTestListJavaModeStyle());
         excelTable1.setiWriteAfterHandler(new WriteAfterHandlerImpl());
-        excelTable1.setiWriteBeforHandler(new WriteBeforHandlerImpl());
+        excelTable1.setiWriteBeforeHandler(new WriteBeforeHandlerImpl());
         ExcelTable excelTable2 = new ExcelTable(2, null, ExcelTest2Model.class, TestData.createTestListJavaMode2());
-        excelTable2.setiWriteBeforHandler(new WriteBeforHandler2Impl());
+        excelTable2.setiWriteBeforeHandler(new WriteBeforeHandler2Impl());
         List<ExcelTable> excelTables = new ArrayList<ExcelTable>() {{
             add(excelTable1);
             add(excelTable2);
@@ -186,10 +188,11 @@ public class WriteTest {
         List<ExcelSheet> sheets = new ArrayList<ExcelSheet>() {{
             add(sheet1);
         }};
-        ExcelWriteParam excelWriteParam = new ExcelWriteParam();
-        excelWriteParam.setExcelFileName(outFileName);
-        excelWriteParam.setExcelOutFilePath(outFilePath);
-        excelWriteParam.setExcelSheets(sheets);
+        ExcelWriteParam excelWriteParam = ExcelWriteParam.builder()
+                .excelFileName(outFileName)
+                .excelOutFilePath(outFilePath)
+                .excelSheets(sheets)
+                .build();
         ExcelWriteResponse export = EasyFileApplication.exportV2007(excelWriteParam);
         logger.info("export result:{}", JSONUtil.objectToString(export));
         Assert.assertEquals(export.getCode(), FileConstant.SUCCESS_CODE);

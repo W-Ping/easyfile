@@ -6,5 +6,11 @@ package com.ping.easyfile.em;
  * @see
  */
 public enum BorderEnum {
-    LEFT, RIGHT, TOP, BOTTOM
+    /**
+     *
+     */
+    LEFT,
+    RIGHT,
+    TOP,
+    BOTTOM
 }

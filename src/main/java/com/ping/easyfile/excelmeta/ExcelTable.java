@@ -2,7 +2,7 @@ package com.ping.easyfile.excelmeta;
 
 import com.ping.easyfile.constant.FileConstant;
 import com.ping.easyfile.core.handler.IWriteAfterHandler;
-import com.ping.easyfile.core.handler.IWriteBeforHandler;
+import com.ping.easyfile.core.handler.IWriteBeforeHandler;
 import com.ping.easyfile.em.TableLayoutEnum;
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -31,7 +31,7 @@ public class ExcelTable implements Comparable<ExcelTable> {
     private TableLayoutEnum tableLayoutEnum = TableLayoutEnum.BOTTOM;
     private boolean needHead = true;
     private IWriteAfterHandler iWriteAfterHandler;
-    private IWriteBeforHandler iWriteBeforHandler;
+    private IWriteBeforeHandler iWriteBeforeHandler;
 
     public ExcelTable(int tableNo, List<List<String>> head, Class<? extends BaseRowModel> headClass, List<? extends BaseRowModel> data) {
         this(tableNo, head, headClass, true, data, 0, 0, null, null, null);
@@ -45,7 +45,7 @@ public class ExcelTable implements Comparable<ExcelTable> {
         this(tableNo, head, headClass, true, data, 0, 0, null, null, null);
     }
 
-    public ExcelTable(int tableNo, List<List<String>> head, Class<? extends BaseRowModel> headClass, boolean needHead, List<? extends BaseRowModel> data, int firstRowIndex, int firstCellIndex, TableLayoutEnum tableLayoutEnum, IWriteBeforHandler iWriteBeforHandler, IWriteAfterHandler iWriteAfterHandler) {
+    public ExcelTable(int tableNo, List<List<String>> head, Class<? extends BaseRowModel> headClass, boolean needHead, List<? extends BaseRowModel> data, int firstRowIndex, int firstCellIndex, TableLayoutEnum tableLayoutEnum, IWriteBeforeHandler iWriteBeforeHandler, IWriteAfterHandler iWriteAfterHandler) {
         this.tableNo = tableNo <= 0 ? 1 : tableNo;
         this.head = head;
         this.headClass = headClass;
@@ -53,7 +53,7 @@ public class ExcelTable implements Comparable<ExcelTable> {
         this.needHead = needHead;
         this.firstRowIndex = firstRowIndex >= 0 ? firstRowIndex : 0;
         this.firstCellIndex = firstCellIndex >= 0 ? firstCellIndex : 0;
-        this.iWriteBeforHandler = iWriteBeforHandler;
+        this.iWriteBeforeHandler = iWriteBeforeHandler;
         this.iWriteAfterHandler = iWriteAfterHandler;
         this.tableLayoutEnum = tableLayoutEnum != null ? tableLayoutEnum : TableLayoutEnum.BOTTOM;
 //        initTableProperties();
@@ -219,12 +219,12 @@ public class ExcelTable implements Comparable<ExcelTable> {
         this.iWriteAfterHandler = iWriteAfterHandler;
     }
 
-    public IWriteBeforHandler getiWriteBeforHandler() {
-        return iWriteBeforHandler;
+    public IWriteBeforeHandler getiWriteBeforeHandler() {
+        return iWriteBeforeHandler;
     }
 
-    public void setiWriteBeforHandler(IWriteBeforHandler iWriteBeforHandler) {
-        this.iWriteBeforHandler = iWriteBeforHandler;
+    public void setiWriteBeforeHandler(IWriteBeforeHandler iWriteBeforeHandler) {
+        this.iWriteBeforeHandler = iWriteBeforeHandler;
     }
 
     @Override

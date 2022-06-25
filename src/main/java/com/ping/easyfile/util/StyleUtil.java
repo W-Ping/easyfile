@@ -86,6 +86,8 @@ public class StyleUtil {
                 case RIGHT:
                     cellStyle.setBorderRight(borderBottomEnum);
                     break;
+                default:
+                    break;
             }
         }
     }

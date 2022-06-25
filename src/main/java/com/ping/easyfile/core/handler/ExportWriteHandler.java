@@ -6,6 +6,7 @@ import com.ping.easyfile.em.ExcelTypeEnum;
 import com.ping.easyfile.excelmeta.ExcelSheet;
 import org.apache.commons.collections4.CollectionUtils;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.List;
 public class ExportWriteHandler {
     private IWriteBuilder iExcelBuilder;
 
-    public ExportWriteHandler(InputStream tempInputStream, OutputStream outputStream, ExcelTypeEnum excelTypeEnum) {
+    public ExportWriteHandler(InputStream tempInputStream, OutputStream outputStream, ExcelTypeEnum excelTypeEnum) throws IOException {
         this.iExcelBuilder = new WriteBuilderImpl(tempInputStream, outputStream, excelTypeEnum);
     }
 
