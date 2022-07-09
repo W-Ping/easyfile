@@ -7,7 +7,6 @@ import java.util.List;
 /**
  * @author liu_wp
  * @date Created in 2019/3/6 17:01
- * @see
  */
 public class ExcelColumnProperty extends BaseColumnProperty {
 

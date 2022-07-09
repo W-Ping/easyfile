@@ -5,7 +5,6 @@ import java.util.Arrays;
 /**
  * @author liu_wp
  * @date Created in 2019/3/6 19:35
- * @see
  */
 public class DataUtil {
     public static <T> T[] concatAll(T[] first, T[]... rest) {

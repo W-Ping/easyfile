@@ -2,6 +2,10 @@ package com.ping.easyfile.util;
 
 import java.io.*;
 
+/**
+ * @author liu_wp
+ * @date Created in 2019/3/6 16:58
+ */
 public class FileUtil {
     private static final String JAVA_IO_TMPDIR = "java.io.tmpdir";
     private static final String FILETEMP = "fileTemp";

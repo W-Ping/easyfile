@@ -18,7 +18,6 @@ import java.util.regex.Pattern;
 /**
  * @author liu_wp
  * @date Created in 2019/3/8 10:29
- * @see
  */
 public class TypeUtil {
 
