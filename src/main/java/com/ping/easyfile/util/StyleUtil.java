@@ -62,14 +62,14 @@ public class StyleUtil {
 
     public static void buildCellBorderStyle(CellStyle cellStyle, int index, boolean bol, BorderEnum borderEnum) {
         if (cellStyle != null && bol) {
-            BorderStyle borderBottomEnum = cellStyle.getBorderBottomEnum();
+            BorderStyle borderBottomEnum = cellStyle.getBorderBottom();
             if (borderBottomEnum == null) {
-                if (cellStyle.getBorderTopEnum() != null) {
-                    borderBottomEnum = cellStyle.getBorderTopEnum();
-                } else if (cellStyle.getBorderLeftEnum() != null) {
-                    borderBottomEnum = cellStyle.getBorderLeftEnum();
+                if (cellStyle.getBorderTop() != null) {
+                    borderBottomEnum = cellStyle.getBorderTop();
+                } else if (cellStyle.getBorderLeft() != null) {
+                    borderBottomEnum = cellStyle.getBorderLeft();
                 } else {
-                    borderBottomEnum = cellStyle.getBorderRightEnum();
+                    borderBottomEnum = cellStyle.getBorderRight();
                 }
             }
             switch (borderEnum) {

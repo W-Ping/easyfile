@@ -144,11 +144,12 @@ public class ReadContext {
                 if (annotation != null) {
                     int index = annotation.index();
                     if (columnIndex == index) {
-                        CellType cellTypeEnum = cell.getCellTypeEnum();
-                        if (CellType.BLANK.equals(cellTypeEnum)) {
+                        final CellType cellType = cell.getCellType();
+//                        CellType cellTypeEnum = cell.getCellTypeEnum();
+                        if (CellType.BLANK.equals(cellType)) {
                             continue;
                         }
-                        if (cellTypeEnum.equals(CellType.NUMERIC)
+                        if (cellType.equals(CellType.NUMERIC)
                                 && org.apache.poi.ss.usermodel.DateUtil.isCellDateFormatted(cell, null)) {
                             String format = annotation.format();
                             if (Date.class.equals(f.getType())) {
