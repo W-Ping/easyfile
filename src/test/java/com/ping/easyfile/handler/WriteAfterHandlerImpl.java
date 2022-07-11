@@ -3,7 +3,6 @@ package com.ping.easyfile.handler;
 import com.ping.easyfile.core.handler.IWriteAfterHandler;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
 
 /**
  * @author liu_wp
@@ -16,7 +15,6 @@ public class WriteAfterHandlerImpl implements IWriteAfterHandler {
     public void row(int rowNum, Row row) {
         System.out.println("rowNum:" + rowNum);
     }
-
     @Override
     public void cell(int cellNum, Cell cell) {
         System.out.println("cellNum:" + cellNum);
