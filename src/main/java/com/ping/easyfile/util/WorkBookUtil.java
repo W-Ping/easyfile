@@ -24,7 +24,7 @@ public class WorkBookUtil {
                     new POIFSFileSystem(templateInputStream));
         } else {
             if (inMemory) {
-                workbook = new XSSFWorkbook(templateInputStream);
+                workbook = templateInputStream != null ? new XSSFWorkbook(templateInputStream) : new XSSFWorkbook();
             } else {
                 workbook = (templateInputStream == null) ? new SXSSFWorkbook(500) : new SXSSFWorkbook(
                         new XSSFWorkbook(templateInputStream));
