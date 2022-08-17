@@ -3,12 +3,15 @@ package com.ping.easyfile.util;
 import com.ping.easyfile.em.DateTypeEnum;
 import net.sf.cglib.beans.BeanMap;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+import org.apache.poi.ss.usermodel.DateUtil;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -76,10 +79,10 @@ public class TypeUtil {
             }
             if (Date.class.equals(field.getType())) {
                 if (value.contains("-") || value.contains("/") || value.contains(":")) {
-                    return getSimpleDateFormatDate(value, format);
+                    return TypeUtil.getSimpleDateFormatDate(value, format);
                 } else {
                     Double d = Double.parseDouble(value);
-                    return HSSFDateUtil.getJavaDate(d, us);
+                    return DateUtil.getJavaDate(d, us);
                 }
             }
             if (BigDecimal.class.equals(field.getType())) {
@@ -212,12 +215,24 @@ public class TypeUtil {
         return simpleDateFormat.format(cellValue);
     }
 
+    public static String formatDate(Timestamp cellValue, String format) {
+        return new SimpleDateFormat(format).format(cellValue.getTime());
+    }
+
+    public static String formatDate(LocalDateTime cellValue, String format) {
+        return cellValue.format(DateTimeFormatter.ofPattern(format));
+    }
+
     public static String getFieldStringValue(BeanMap beanMap, String fieldName, String format) {
         String cellValue = null;
         Object value = beanMap.get(fieldName);
         if (value != null) {
             if (value instanceof Date) {
                 cellValue = TypeUtil.formatDate((Date) value, format);
+            } else if (value instanceof Timestamp) {
+                cellValue = TypeUtil.formatDate((Timestamp) value, format);
+            } else if (value instanceof LocalDateTime) {
+                cellValue = TypeUtil.formatDate((LocalDateTime) value, format);
             } else {
                 cellValue = value.toString();
             }

@@ -37,15 +37,20 @@ public final class EasyFileApplication {
      * @return
      */
     public static ExcelWriteResponse exportV2007(ExcelWriteParam param) {
+        return EasyFileApplication.exportV2007(param, null);
+    }
+
+    public static ExcelWriteResponse exportV2007(ExcelWriteParam param, InputStream inputStream) {
         logger.info("export excel startTime:" + System.currentTimeMillis());
-        InputStream inputStream = null;
         OutputStream outputStream = null;
         ExcelWriteResponse excelWriteResponse = new ExcelWriteResponse();
         try {
             validateParam(param, ExcelTypeEnum.XLSX);
-            inputStream = FileUtil.getResourcesFileInputStream(param.getExcelTemplateFile());
+            if (inputStream == null && StringUtils.isNotBlank(param.getExcelTemplateFile())) {
+                inputStream = FileUtil.getResourcesFileInputStream(param.getExcelTemplateFile());
+            }
             outputStream = FileUtil.synGetResourcesFileOutputStream(param.getExcelOutFilePath(), param.getExcelFileName());
-            ExportWriteHandler exportHandler = new ExportWriteHandler(inputStream, outputStream, ExcelTypeEnum.XLSX);
+            ExportWriteHandler exportHandler = new ExportWriteHandler(inputStream, outputStream, ExcelTypeEnum.XLSX, param);
             List<ExcelSheet> excelSheets = param.getExcelSheets();
             exportHandler.exportExcelV2007(excelSheets);
             excelWriteResponse = new ExcelWriteResponse(FileConstant.SUCCESS_CODE, param.getExcelOutFileFullPath());
@@ -70,7 +75,7 @@ public final class EasyFileApplication {
         if (StringUtils.isBlank(param.getExcelTemplateFile())) {
             return ExcelWriteResponse.fail("excel template is null");
         }
-        return exportV2007(param);
+        return EasyFileApplication.exportV2007(param);
     }
 
     /**

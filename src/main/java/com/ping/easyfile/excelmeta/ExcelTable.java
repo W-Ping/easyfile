@@ -23,8 +23,8 @@ public class ExcelTable implements Comparable<ExcelTable> {
     private List<ExcelColumnProperty> columnPropertyList = new ArrayList<>();
     private List<List<String>> head = new ArrayList<>();
     private Class<? extends BaseRowModel> headClass;
-    private int firstRowIndex = 0;
-    private int firstCellIndex = 0;
+    private int firstRowIndex;
+    private int firstCellIndex;
     private int startContentRowIndex = 0;
     private int spaceNum = 1;
     private TableLayoutEnum tableLayoutEnum = TableLayoutEnum.BOTTOM;

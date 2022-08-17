@@ -10,22 +10,22 @@ import com.ping.easyfile.excelmeta.ExcelTable;
 import com.ping.easyfile.handler.WriteAfterHandlerImpl;
 import com.ping.easyfile.handler.WriteBeforeHandler2Impl;
 import com.ping.easyfile.handler.WriteBeforeHandlerImpl;
+import com.ping.easyfile.model.ExcelTest1Model;
 import com.ping.easyfile.model.ExcelTest2Model;
 import com.ping.easyfile.model.ExportTest3Model;
 import com.ping.easyfile.model.ExportTestModel;
 import com.ping.easyfile.request.ExcelWriteParam;
+import com.ping.easyfile.request.WaterMark;
 import com.ping.easyfile.response.ExcelWriteResponse;
-import com.ping.easyfile.util.JSONUtil;
+import com.ping.easyfile.util.FileUtil;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.junit.Assert;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 /**
  * @author liu_wp
@@ -33,7 +33,76 @@ import java.util.Map;
  * @see
  */
 public class WriteTest {
-    private static Logger logger = LoggerFactory.getLogger(WriteTest.class);
+    @Test
+    public void exportWithTmpWaterMark() {
+        String outFilePath = "/opt/excel_watermark";
+        String outFileName = TestData.createUniqueFileName("测试默认导出1") + ".xlsx";
+        ExcelTable t1 = new ExcelTable(1, null, ExcelTest1Model.class, TestData.createTestListJavaModel1(), false);
+        t1.setFirstRowIndex(1);
+        ExcelSheet sheet1 = new ExcelSheet(0, "测试默认1", Arrays.asList(t1));
+        final ExcelWriteParam excelWriteParam = ExcelWriteParam.builder()
+                .excelFileName(outFileName)
+                .excelOutFilePath(outFilePath)
+                .excelSheets(Arrays.asList(sheet1))
+                .waterMark(new WaterMark("测试水印\n" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy年MM月dd日"))))
+                .build();
+        String tmpFilePath = "write_test.xlsx";
+        final InputStream tmpInputStream = FileUtil.getResourcesFileInputStream(tmpFilePath);
+        ExcelWriteResponse export = EasyFileApplication.exportV2007(excelWriteParam, tmpInputStream);
+        Assert.assertEquals(export.getCode(), FileConstant.SUCCESS_CODE);
+    }
+
+
+    @Test
+    public void exportWithTmp1() {
+        String outFilePath = "/opt/excel_tmp";
+        String outFileName = TestData.createUniqueFileName("测试默认导出1") + ".xlsx";
+        ExcelTable t1 = new ExcelTable(1, null, ExcelTest1Model.class, TestData.createTestListJavaModel1(), false);
+        t1.setFirstRowIndex(1);
+        ExcelSheet sheet1 = new ExcelSheet(0, "测试默认1", Arrays.asList(t1));
+        final ExcelWriteParam excelWriteParam = ExcelWriteParam.builder()
+                .excelFileName(outFileName)
+                .excelOutFilePath(outFilePath)
+                .excelSheets(Arrays.asList(sheet1))
+                .build();
+        String tmpFilePath = "write_test.xlsx";
+        final InputStream tmpInputStream = FileUtil.getResourcesFileInputStream(tmpFilePath);
+        ExcelWriteResponse export = EasyFileApplication.exportV2007(excelWriteParam, tmpInputStream);
+        Assert.assertEquals(export.getCode(), FileConstant.SUCCESS_CODE);
+    }
+
+    @Test
+    public void exportWithTmp2() {
+        String outFilePath = "/opt/excel_tmp";
+        String outFileName = TestData.createUniqueFileName("测试默认导出1") + ".xlsx";
+        String tmpFilePath = "write_test.xlsx";
+        ExcelTable t1 = new ExcelTable(1, null, ExcelTest1Model.class, TestData.createTestListJavaModel1(), false);
+        t1.setFirstRowIndex(1);
+        ExcelSheet sheet1 = new ExcelSheet(0, "测试默认1", Arrays.asList(t1));
+        final ExcelWriteParam excelWriteParam = ExcelWriteParam.builder()
+                .excelFileName(outFileName)
+                .excelTemplateFile(tmpFilePath)
+                .excelOutFilePath(outFilePath)
+                .excelSheets(Arrays.asList(sheet1))
+                .build();
+        ExcelWriteResponse export = EasyFileApplication.exportV2007WithTemp(excelWriteParam);
+        Assert.assertEquals(export.getCode(), FileConstant.SUCCESS_CODE);
+    }
+
+    @Test
+    public void exportDefault3() {
+        String outFilePath = "/opt/excel_default";
+        String outFileName = TestData.createUniqueFileName("测试默认导出") + ".xlsx";
+        ExcelTable t1 = new ExcelTable(1, null, ExportTestModel.class, TestData.createTestListJavaMode2());
+        ExcelSheet sheet1 = new ExcelSheet(0, "测试默认", Arrays.asList(t1));
+        final ExcelWriteParam excelWriteParam = ExcelWriteParam.builder()
+                .excelFileName(outFileName)
+                .excelOutFilePath(outFilePath)
+                .excelSheets(Arrays.asList(sheet1))
+                .build();
+        ExcelWriteResponse export = EasyFileApplication.exportV2007(excelWriteParam);
+        Assert.assertEquals(export.getCode(), FileConstant.SUCCESS_CODE);
+    }
 
     @Test
     public void exportV2007WithLayout() {
@@ -102,7 +171,6 @@ public class WriteTest {
         excelWriteParam.setExcelOutFilePath(outFilePath);
         excelWriteParam.setExcelSheets(sheets);
         ExcelWriteResponse export = EasyFileApplication.exportV2007(excelWriteParam);
-        logger.info("export result:{}", JSONUtil.objectToString(export));
         Assert.assertEquals(export.getCode(), FileConstant.SUCCESS_CODE);
     }
 
@@ -126,7 +194,6 @@ public class WriteTest {
                 .excelSheets(sheets)
                 .build();
         ExcelWriteResponse export = EasyFileApplication.exportV2007(excelWriteParam);
-        logger.info("export result:{}", JSONUtil.objectToString(export));
         Assert.assertEquals(export.getCode(), FileConstant.SUCCESS_CODE);
     }
 
@@ -167,7 +234,6 @@ public class WriteTest {
                 .excelSheets(sheets)
                 .build();
         ExcelWriteResponse export = EasyFileApplication.exportV2007(excelWriteParam);
-        logger.info("export result:{}", JSONUtil.objectToString(export));
         Assert.assertEquals(export.getCode(), FileConstant.SUCCESS_CODE);
     }
 
@@ -194,7 +260,6 @@ public class WriteTest {
                 .excelSheets(sheets)
                 .build();
         ExcelWriteResponse export = EasyFileApplication.exportV2007(excelWriteParam);
-        logger.info("export result:{}", JSONUtil.objectToString(export));
         Assert.assertEquals(export.getCode(), FileConstant.SUCCESS_CODE);
     }
 }

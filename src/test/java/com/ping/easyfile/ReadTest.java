@@ -3,10 +3,8 @@ package com.ping.easyfile;
 import com.ping.easyfile.excelmeta.ExcelReadTable;
 import com.ping.easyfile.model.ReadTest2Model;
 import com.ping.easyfile.model.ReadTestModel;
-import com.ping.easyfile.util.JSONUtil;
+import org.junit.Assert;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +16,6 @@ import java.util.Map;
  * @see
  */
 public class ReadTest {
-    private static Logger logger = LoggerFactory.getLogger(ReadTest.class);
 
     @Test
     public void readExcelTest() {
@@ -33,7 +30,7 @@ public class ReadTest {
         Map<Integer, List<Object>> integerListMap = EasyFileApplication.readExcel(excelPath, excelReadTables);
         List<Object> list1 = integerListMap.get(1);
         List<Object> list2 = integerListMap.get(2);
-        logger.info("解析结果1{}", JSONUtil.objectToString(list1));
-        logger.info("解析结果2{}", JSONUtil.objectToString(list2));
+        Assert.assertTrue(!list1.isEmpty());
+        Assert.assertTrue(!list2.isEmpty());
     }
 }

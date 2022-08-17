@@ -36,24 +36,33 @@ public class ExcelWriteParam {
      */
     private List<ExcelSheet> excelSheets;
 
+    private WaterMark waterMark;
+
+    /**
+     *
+     */
+    private boolean inMemory;
+
 
     public ExcelWriteParam() {
     }
 
 
-    ExcelWriteParam(String excelTemplateFile, String excelOutFilePath, String excelFileName, String excelOutFileFullPath, List<ExcelSheet> excelSheets) {
+    ExcelWriteParam(String excelTemplateFile, String excelOutFilePath, String excelFileName, String excelOutFileFullPath, List<ExcelSheet> excelSheets, WaterMark waterMark, boolean inMemory) {
         this.excelTemplateFile = excelTemplateFile;
         this.excelOutFilePath = excelOutFilePath;
         this.excelFileName = excelFileName;
         this.excelOutFileFullPath = excelOutFileFullPath;
         this.excelSheets = excelSheets;
+        this.waterMark = waterMark;
+        this.inMemory = waterMark != null || inMemory;
     }
 
-    public static builder builder() {
-        return new builder();
+    public static Builder builder() {
+        return new Builder();
     }
 
-    public static class builder {
+    public static class Builder {
 
         private String excelTemplateFile;
 
@@ -66,38 +75,50 @@ public class ExcelWriteParam {
 
         private List<ExcelSheet> excelSheets;
 
-        builder() {
+        private WaterMark waterMark;
+
+        private boolean inMemory;
+
+        Builder() {
         }
 
-        ;
+        public Builder waterMark(WaterMark waterMark) {
+            this.waterMark = waterMark;
+            return this;
+        }
 
-        public builder excelTemplateFile(String excelTemplateFile) {
+        public Builder inMemory(Boolean inMemory) {
+            this.inMemory = inMemory;
+            return this;
+        }
+
+        public Builder excelTemplateFile(String excelTemplateFile) {
             this.excelTemplateFile = excelTemplateFile;
             return this;
         }
 
-        public builder excelOutFilePath(String excelOutFilePath) {
+        public Builder excelOutFilePath(String excelOutFilePath) {
             this.excelOutFilePath = excelOutFilePath;
             return this;
         }
 
-        public builder excelFileName(String excelFileName) {
+        public Builder excelFileName(String excelFileName) {
             this.excelFileName = excelFileName;
             return this;
         }
 
-        public builder excelSheets(List<ExcelSheet> excelSheets) {
+        public Builder excelSheets(List<ExcelSheet> excelSheets) {
             this.excelSheets = excelSheets;
             return this;
         }
 
-        public builder excelOutFileFullPath(String excelOutFileFullPath) {
+        public Builder excelOutFileFullPath(String excelOutFileFullPath) {
             this.excelOutFileFullPath = excelOutFileFullPath;
             return this;
         }
 
         public ExcelWriteParam build() {
-            return new ExcelWriteParam(excelTemplateFile, excelOutFilePath, excelFileName, excelOutFileFullPath, excelSheets);
+            return new ExcelWriteParam(excelTemplateFile, excelOutFilePath, excelFileName, excelOutFileFullPath, excelSheets, waterMark, inMemory);
         }
 
         @Override
@@ -144,6 +165,14 @@ public class ExcelWriteParam {
         this.excelFileName = excelFileName;
     }
 
+    public WaterMark getWaterMark() {
+        return waterMark;
+    }
+
+    public void setWaterMark(WaterMark waterMark) {
+        this.waterMark = waterMark;
+    }
+
     public String getExcelOutFileFullPath() {
         if (this.excelOutFileFullPath != null && this.excelOutFileFullPath.length() > 0) {
             return this.excelOutFileFullPath;
@@ -153,6 +182,14 @@ public class ExcelWriteParam {
 
     public void setExcelOutFileFullPath(String excelOutFileFullPath) {
         this.excelOutFileFullPath = excelOutFileFullPath;
+    }
+
+    public boolean isInMemory() {
+        return inMemory;
+    }
+
+    public void setInMemory(boolean inMemory) {
+        this.inMemory = inMemory;
     }
 
     @Override

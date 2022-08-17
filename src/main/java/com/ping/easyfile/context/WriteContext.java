@@ -5,6 +5,7 @@ import com.ping.easyfile.em.BorderEnum;
 import com.ping.easyfile.em.ExcelTypeEnum;
 import com.ping.easyfile.em.TableBodyEnum;
 import com.ping.easyfile.excelmeta.*;
+import com.ping.easyfile.request.ExcelWriteParam;
 import com.ping.easyfile.util.StyleUtil;
 import com.ping.easyfile.util.WorkBookUtil;
 import org.apache.commons.collections4.CollectionUtils;
@@ -30,11 +31,13 @@ public class WriteContext {
     private ExcelSheet currentExcelSheetParam;
     private ExcelTypeEnum excelType;
     private OutputStream outputStream;
+    private ExcelWriteParam excelWriteParam;
 
-    public WriteContext(InputStream templateInputStream, OutputStream outputStream, ExcelTypeEnum excelType) throws IOException {
+    public WriteContext(InputStream templateInputStream, OutputStream outputStream, ExcelTypeEnum excelType, ExcelWriteParam excelWriteParam) throws IOException {
         this.excelType = excelType;
         this.outputStream = outputStream;
-        this.workbook = WorkBookUtil.createWorkBook(templateInputStream, excelType);
+        this.excelWriteParam = excelWriteParam;
+        this.workbook = WorkBookUtil.createWorkBook(templateInputStream, excelType, excelWriteParam.isInMemory());
     }
 
     public void currentSheet(ExcelSheet excelSheet) {
@@ -231,4 +234,7 @@ public class WriteContext {
         this.outputStream = outputStream;
     }
 
+    public ExcelWriteParam getExcelWriteParam() {
+        return excelWriteParam;
+    }
 }

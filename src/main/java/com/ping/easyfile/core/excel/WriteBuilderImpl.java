@@ -5,6 +5,8 @@ import com.ping.easyfile.em.BorderEnum;
 import com.ping.easyfile.em.ExcelTypeEnum;
 import com.ping.easyfile.excelmeta.*;
 import com.ping.easyfile.exception.ExcelParseException;
+import com.ping.easyfile.request.ExcelWriteParam;
+import com.ping.easyfile.util.ExcelWaterUtil;
 import com.ping.easyfile.util.StyleUtil;
 import com.ping.easyfile.util.TypeUtil;
 import com.ping.easyfile.util.WorkBookUtil;
@@ -14,6 +16,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,8 +34,8 @@ public class WriteBuilderImpl implements IWriteBuilder {
 
     public WriteBuilderImpl(InputStream templateInputStream,
                             OutputStream outputStream,
-                            ExcelTypeEnum excelType) throws IOException {
-        context = new WriteContext(templateInputStream, outputStream, excelType);
+                            ExcelTypeEnum excelType, ExcelWriteParam excelWriteParam) throws IOException {
+        context = new WriteContext(templateInputStream, outputStream, excelType, excelWriteParam);
 
     }
 
@@ -48,6 +51,7 @@ public class WriteBuilderImpl implements IWriteBuilder {
         if (excelSheet.getMergeData() != null) {
             excelSheet.getMergeData().stream().forEach(v -> merge(v[0], v[1], v[2], v[3]));
         }
+
     }
 
     @Override
@@ -90,8 +94,27 @@ public class WriteBuilderImpl implements IWriteBuilder {
         try {
             context.getWorkbook().write(context.getOutputStream());
             context.getWorkbook().close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new ExcelParseException("Excel IO error", e);
+        }
+    }
+
+    @Override
+    public WriteContext getWriteContext() {
+        return context;
+    }
+
+    @Override
+    public void beforeWrite() {
+        //添加水印
+        if (context.getExcelWriteParam().getWaterMark() != null) {
+            if (context.getWorkbook() instanceof XSSFWorkbook) {
+                try {
+                    ExcelWaterUtil.putWaterMarkTextToXlsx((XSSFWorkbook) context.getWorkbook(), context.getExcelWriteParam().getWaterMark());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
     }
 

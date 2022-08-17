@@ -1,9 +1,10 @@
 package com.ping.easyfile.core.handler;
 
-import com.ping.easyfile.core.excel.WriteBuilderImpl;
 import com.ping.easyfile.core.excel.IWriteBuilder;
+import com.ping.easyfile.core.excel.WriteBuilderImpl;
 import com.ping.easyfile.em.ExcelTypeEnum;
 import com.ping.easyfile.excelmeta.ExcelSheet;
+import com.ping.easyfile.request.ExcelWriteParam;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.io.IOException;
@@ -18,19 +19,17 @@ import java.util.List;
 public class ExportWriteHandler {
     private IWriteBuilder iExcelBuilder;
 
-    public ExportWriteHandler(InputStream tempInputStream, OutputStream outputStream, ExcelTypeEnum excelTypeEnum) throws IOException {
-        this.iExcelBuilder = new WriteBuilderImpl(tempInputStream, outputStream, excelTypeEnum);
+    public ExportWriteHandler(InputStream tempInputStream, OutputStream outputStream, ExcelTypeEnum excelTypeEnum, ExcelWriteParam excelWriteParam) throws IOException {
+        this.iExcelBuilder = new WriteBuilderImpl(tempInputStream, outputStream, excelTypeEnum, excelWriteParam);
     }
 
     public void exportExcelV2007(List<ExcelSheet> excelSheets) {
         if (!CollectionUtils.isEmpty(excelSheets)) {
+            iExcelBuilder.beforeWrite();
             for (ExcelSheet excelSheet : excelSheets) {
                 iExcelBuilder.addContent(excelSheet);
             }
             iExcelBuilder.finish();
         }
-    }
-
-    public void exportExcelV2003(List<ExcelSheet> excelSheets) {
     }
 }

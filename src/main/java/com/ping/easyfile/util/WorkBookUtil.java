@@ -8,34 +8,28 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
 /**
  * @author liu_wp
  * @date Created in 2019/3/8 10:29
  */
 public class WorkBookUtil {
 
-    public static void createTempExcel(String filePath, ExcelTypeEnum excelType) {
-        try {
-            Workbook workBook = createWorkBook(null, excelType);
-            FileOutputStream out = new FileOutputStream(filePath);
-            workBook.write(out);
-            out.close();
-        } catch (Exception e) {
-
-        }
-    }
-
-    public static Workbook createWorkBook(InputStream templateInputStream, ExcelTypeEnum excelType) throws IOException {
+    public static Workbook createWorkBook(InputStream templateInputStream, ExcelTypeEnum excelType, boolean inMemory) throws IOException {
         Workbook workbook;
         if (ExcelTypeEnum.XLS.equals(excelType)) {
             workbook = (templateInputStream == null) ? new HSSFWorkbook() : new HSSFWorkbook(
                     new POIFSFileSystem(templateInputStream));
         } else {
-            workbook = (templateInputStream == null) ? new SXSSFWorkbook(500) : new SXSSFWorkbook(
-                    new XSSFWorkbook(templateInputStream));
+            if (inMemory) {
+                workbook = new XSSFWorkbook(templateInputStream);
+            } else {
+                workbook = (templateInputStream == null) ? new SXSSFWorkbook(500) : new SXSSFWorkbook(
+                        new XSSFWorkbook(templateInputStream));
+            }
+
         }
         return workbook;
     }

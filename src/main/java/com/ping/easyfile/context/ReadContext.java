@@ -10,6 +10,8 @@ import com.ping.easyfile.util.DateUtil;
 import com.ping.easyfile.util.WorkBookUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +26,7 @@ import java.util.List;
  * @date Created in 2019/3/22 16:59
  */
 public class ReadContext {
+    private static Logger logger = LoggerFactory.getLogger(ReadContext.class);
     private Workbook workbook;
     private Sheet currentSheet;
     private ExcelTypeEnum excelType;
@@ -102,12 +105,8 @@ public class ReadContext {
             try {
                 Class<?> aClass = Class.forName(dataModelClass.getName());
                 obj = aClass.newInstance();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+                logger.error("excel data model is error! {}", e.getMessage());
             }
             lastCellIndex = startCellIndex + (lastCellIndex != null ? lastCellIndex : row.getPhysicalNumberOfCells() - 1);
             boolean rowIsEmpty = true;
@@ -145,7 +144,6 @@ public class ReadContext {
                     int index = annotation.index();
                     if (columnIndex == index) {
                         final CellType cellType = cell.getCellType();
-//                        CellType cellTypeEnum = cell.getCellTypeEnum();
                         if (CellType.BLANK.equals(cellType)) {
                             continue;
                         }
@@ -185,7 +183,7 @@ public class ReadContext {
                 }
             }
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            logger.error("excel data set model field error! {}", e.getMessage());
         }
 
     }

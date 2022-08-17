@@ -53,8 +53,8 @@ public class StyleUtil {
         newCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
         newCellStyle.setAlignment(HorizontalAlignment.CENTER);
         newCellStyle.setLocked(true);
-        newCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        newCellStyle.setFillForegroundColor(IndexedColors.WHITE1.getIndex());
+//        newCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+//        newCellStyle.setFillForegroundColor(IndexedColors.WHITE1.getIndex());
         newCellStyle.setBorderBottom(BorderStyle.THIN);
         newCellStyle.setBorderLeft(BorderStyle.THIN);
         return newCellStyle;

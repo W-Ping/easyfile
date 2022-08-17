@@ -28,7 +28,6 @@ public class FileUtil {
         file = new File(fileReplacePath(filePath + "/" + fileName));
         return new FileOutputStream(file);
     }
-
     /**
      * @param filePath
      * @return

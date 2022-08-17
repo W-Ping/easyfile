@@ -1,19 +1,19 @@
 package com.ping.easyfile.data;
 
-import com.ping.easyfile.em.ExcelTypeEnum;
+import com.ping.easyfile.excelmeta.ExcelStyle;
+import com.ping.easyfile.model.ExcelTest1Model;
 import com.ping.easyfile.model.ExcelTest2Model;
 import com.ping.easyfile.model.ExportTest3Model;
 import com.ping.easyfile.model.ExportTestModel;
-import com.ping.easyfile.excelmeta.ExcelStyle;
-import com.ping.easyfile.util.WorkBookUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.*;
 
-import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author liu_wp
@@ -81,7 +81,7 @@ public class TestData {
         return model1s;
     }
 
-    public static List<ExportTestModel> createTestListJavaModeStyle(){
+    public static List<ExportTestModel> createTestListJavaModeStyle() {
         List<ExportTestModel> model1s = new ArrayList<ExportTestModel>();
         for (int i = 0; i < 5; i++) {
             ExportTestModel model1 = new ExportTestModel();
@@ -103,7 +103,7 @@ public class TestData {
 
     public static List<ExcelTest2Model> createTestListJavaMode2() {
         List<ExcelTest2Model> model1s = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 10; i++) {
             ExcelTest2Model model1 = new ExcelTest2Model();
             model1.setP1("第一列，第" + (i + 1) + "行");
             model1.setP2("32323JJfdf");
@@ -133,5 +133,25 @@ public class TestData {
             model1s.add(model1);
         }
         return model1s;
+    }
+
+    public static List<ExcelTest1Model> createTestListJavaModel1() {
+        List<ExcelTest1Model> list = new ArrayList<>();
+        for (int i = 0; i < 50; i++) {
+            ExcelTest1Model model1 = new ExcelTest1Model();
+            model1.setP1("第一列，第" + (i + 1) + "行");
+            model1.setP2("39087623JJfdf");
+            model1.setP3(42 + i);
+            model1.setP4(893434L + i);
+            model1.setP5("66ces");
+            model1.setP6(333.2f);
+            model1.setP7(new BigDecimal("45.13991399"));
+            model1.setP8(new Date());
+            model1.setP9(Double.parseDouble("19.34"));
+            model1.setP10(LocalDateTime.now());
+            model1.setP11(new Timestamp(System.currentTimeMillis()));
+            list.add(model1);
+        }
+        return list;
     }
 }

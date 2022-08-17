@@ -1,5 +1,6 @@
 package com.ping.easyfile.core.excel;
 
+import com.ping.easyfile.context.WriteContext;
 import com.ping.easyfile.excelmeta.ExcelSheet;
 import com.ping.easyfile.excelmeta.ExcelTable;
 
@@ -8,7 +9,11 @@ import com.ping.easyfile.excelmeta.ExcelTable;
  * @date Created in 2019/3/6 10:14
  */
 public interface IWriteBuilder {
-
+    /**
+     * 设置水印
+     *
+     */
+    void beforeWrite();
     /**
      * 添加 excel sheet
      *
@@ -33,6 +38,13 @@ public interface IWriteBuilder {
      * @param endCell
      */
     void merge(int startRow, int endRow, int startCell, int endCell);
+
+    /**
+     * @return
+     */
+    WriteContext getWriteContext();
+
+
 
     /**
      * 操作完成
