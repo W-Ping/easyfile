@@ -35,6 +35,7 @@ import java.util.*;
 public class WriteTest {
     @Test
     public void exportWithTmpWaterMark() {
+        final long l = System.currentTimeMillis();
         String outFilePath = "/opt/excel_watermark";
         String outFileName = TestData.createUniqueFileName("测试默认导出1") + ".xlsx";
         ExcelTable t1 = new ExcelTable(1, null, ExcelTest1Model.class, TestData.createTestListJavaModel1(), false);
@@ -50,11 +51,13 @@ public class WriteTest {
         final InputStream tmpInputStream = FileUtil.getResourcesFileInputStream(tmpFilePath);
         ExcelWriteResponse export = EasyFileApplication.exportV2007(excelWriteParam, tmpInputStream);
         Assert.assertEquals(export.getCode(), FileConstant.SUCCESS_CODE);
+        System.out.println((System.currentTimeMillis() - l) / 1000 + "秒");
     }
 
 
     @Test
     public void exportWithTmp1() {
+        final long l = System.currentTimeMillis();
         String outFilePath = "/opt/excel_tmp";
         String outFileName = TestData.createUniqueFileName("测试默认导出1") + ".xlsx";
         ExcelTable t1 = new ExcelTable(1, null, ExcelTest1Model.class, TestData.createTestListJavaModel1(), false);
@@ -69,6 +72,7 @@ public class WriteTest {
         final InputStream tmpInputStream = FileUtil.getResourcesFileInputStream(tmpFilePath);
         ExcelWriteResponse export = EasyFileApplication.exportV2007(excelWriteParam, tmpInputStream);
         Assert.assertEquals(export.getCode(), FileConstant.SUCCESS_CODE);
+        System.out.println((System.currentTimeMillis() - l) / 1000 + "秒");
     }
 
     @Test
